@@ -30,16 +30,16 @@ Single project at repo root: `src/`, `public/`, `tests/` (or co-located `*.test.
 
 **Purpose**: Scaffold the Vite SPA and reproduce the Stitch design system as a real build.
 
-- [ ] T001 Create `package.json` at repo root with scripts (`dev`,`build`,`preview`,`test`,`lint`) and dependencies: react, react-dom, react-router-dom, @supabase/supabase-js, @tanstack/react-query, react-plotly.js, plotly.js-dist-min; devDeps: vite, @vitejs/plugin-react, typescript, tailwindcss, postcss, autoprefixer, vitest, @types/react, @types/react-dom
-- [ ] T002 [P] Create `vite.config.ts` (react plugin) and `tsconfig.json` + `tsconfig.node.json` with `strict: true`
-- [ ] T003 [P] Create `index.html` at repo root with `#root`, Geist + Material Symbols `<link>` tags, and `<title>`
-- [ ] T004 [P] Create `tailwind.config.ts` porting the Stitch tokens (colors incl. primary `#005c86`, secondary-container `#62fae3`, surface `#f9f9f7`; borderRadius, spacing, fontSize, Geist fontFamily) and `postcss.config.js`
-- [ ] T005 [P] Create `src/styles/index.css` with Tailwind directives, base body (surface bg, Geist), and Material Symbols helper class
-- [ ] T006 [P] Create `.env.example` with `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `VITE_API_BASE_URL`
-- [ ] T007 [P] Create `public/_redirects` containing `/* /index.html 200`
-- [ ] T008 [P] Configure Vitest in `vite.config.ts` (or `vitest.config.ts`) with jsdom env for unit tests
+- [x] T001 Create `package.json` at repo root with scripts (`dev`,`build`,`preview`,`test`,`lint`) and dependencies: react, react-dom, react-router-dom, @supabase/supabase-js, @tanstack/react-query, react-plotly.js, plotly.js-dist-min; devDeps: vite, @vitejs/plugin-react, typescript, tailwindcss, postcss, autoprefixer, vitest, @types/react, @types/react-dom
+- [x] T002 [P] Create `vite.config.ts` (react plugin, `@` alias) and strict `tsconfig.json` (`strict: true`) — consolidated to a single typecheck (`tsc --noEmit`), no separate node project reference
+- [x] T003 [P] Create `index.html` at repo root with `#root`, Geist + Material Symbols `<link>` tags, and `<title>`
+- [x] T004 [P] Create `tailwind.config.ts` porting the Stitch tokens (colors incl. primary `#005c86`, secondary-container `#62fae3`, surface `#f9f9f7`; borderRadius, spacing, fontSize, Geist fontFamily) and `postcss.config.js`
+- [x] T005 [P] Create `src/styles/index.css` with Tailwind directives, base body (surface bg, Geist), and Material Symbols helper class
+- [x] T006 [P] Create `.env.example` with `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `VITE_API_BASE_URL`
+- [x] T007 [P] Create `public/_redirects` containing `/* /index.html 200`
+- [x] T008 [P] Configure Vitest in `vite.config.ts` (jsdom env) for unit tests
 
-**Checkpoint**: `npm install` succeeds; `npm run dev` serves a blank app; `npm run build` outputs `dist/`.
+**Checkpoint**: ✅ `npm install` succeeds; `npm run build` passes `tsc --noEmit` + `vite build` (Stitch tokens compiled, `dist/` output). Placeholder `src/main.tsx`+`App.tsx` boot the app (replaced by router in T022).
 
 ---
 
