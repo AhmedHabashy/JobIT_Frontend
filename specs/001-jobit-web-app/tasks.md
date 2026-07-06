@@ -1,0 +1,257 @@
+---
+description: "Task list for JobIT Web App implementation"
+---
+
+# Tasks: JobIT Web App — AI Career & Labour-Market Assistant
+
+**Input**: Design documents from `specs/001-jobit-web-app/`
+
+**Prerequisites**: plan.md, spec.md, research.md, data-model.md, contracts/
+
+**Tests**: Only the two constitution-mandated unit modules are tested (SSE parser, ApiError→UX
+mapper). Broader component tests are out of scope for v1 unless noted.
+
+**Organization**: Grouped by user story (priority order) so each is independently deliverable.
+US1 and US2 are both P1 (auth + streaming chat form the MVP together).
+
+## Format: `[ID] [P?] [Story] Description`
+
+- **[P]**: Can run in parallel (different files, no dependencies on incomplete tasks)
+- **[Story]**: US1–US7 per spec.md
+- File paths are relative to the repository root (single Vite SPA)
+
+## Path Conventions
+
+Single project at repo root: `src/`, `public/`, `tests/` (or co-located `*.test.ts`).
+
+---
+
+## Phase 1: Setup (Shared Infrastructure)
+
+**Purpose**: Scaffold the Vite SPA and reproduce the Stitch design system as a real build.
+
+- [ ] T001 Create `package.json` at repo root with scripts (`dev`,`build`,`preview`,`test`,`lint`) and dependencies: react, react-dom, react-router-dom, @supabase/supabase-js, @tanstack/react-query, react-plotly.js, plotly.js-dist-min; devDeps: vite, @vitejs/plugin-react, typescript, tailwindcss, postcss, autoprefixer, vitest, @types/react, @types/react-dom
+- [ ] T002 [P] Create `vite.config.ts` (react plugin) and `tsconfig.json` + `tsconfig.node.json` with `strict: true`
+- [ ] T003 [P] Create `index.html` at repo root with `#root`, Geist + Material Symbols `<link>` tags, and `<title>`
+- [ ] T004 [P] Create `tailwind.config.ts` porting the Stitch tokens (colors incl. primary `#005c86`, secondary-container `#62fae3`, surface `#f9f9f7`; borderRadius, spacing, fontSize, Geist fontFamily) and `postcss.config.js`
+- [ ] T005 [P] Create `src/styles/index.css` with Tailwind directives, base body (surface bg, Geist), and Material Symbols helper class
+- [ ] T006 [P] Create `.env.example` with `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `VITE_API_BASE_URL`
+- [ ] T007 [P] Create `public/_redirects` containing `/* /index.html 200`
+- [ ] T008 [P] Configure Vitest in `vite.config.ts` (or `vitest.config.ts`) with jsdom env for unit tests
+
+**Checkpoint**: `npm install` succeeds; `npm run dev` serves a blank app; `npm run build` outputs `dist/`.
+
+---
+
+## Phase 2: Foundational (Blocking Prerequisites)
+
+**Purpose**: Cross-cutting primitives every user story imports. ⚠️ No story work begins until done.
+
+- [ ] T009 [P] Define API + SSE + local-state TypeScript types in `src/types/api.ts` per data-model.md (UserOut, ChatSessionSummary, ChatSessionDetail, Message, Chart, UserProfile, UploadResponse, SessionResponse, MessageRequest, ApiErrorCode, ApiError, SseEvent)
+- [ ] T010 [P] Implement the Supabase browser client in `src/lib/supabase.ts` (single instance; `persistSession: true`, `autoRefreshToken: true`; reads `VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY`)
+- [ ] T011 [P] Implement `ApiError` construction + the `toUx()` mapper in `src/lib/apiError.ts` (map every code → banner | toast-transient | toast-retryable | redirect-login | inline | not_found; each carries `request_id`)
+- [ ] T012 [P] [Test] Unit-test the mapper in `tests/apiError.test.ts` — assert every ApiErrorCode maps to its expected UX directive and preserves `request_id`
+- [ ] T013 [P] Implement the isolated SSE parser `parseSSE(stream)` in `src/lib/sse.ts` (TextDecoder, buffer, split on `"\n\n"`, parse `event:`/multi-line `data:`, ignore comments/keep-alives; async generator of `{event,data}`)
+- [ ] T014 [P] [Test] Unit-test `parseSSE` in `tests/sse.test.ts` — frames split across chunk boundaries, multi-line `data:`, multiple frames per chunk, trailing partial buffer, all five event types
+- [ ] T015 Implement the fetch wrapper in `src/lib/apiClient.ts` (await `supabase.auth.getSession()` and inject fresh `Authorization: Bearer` per call; set `X-Request-ID` uuid; parse JSON; throw typed `ApiError` with `httpStatus` on non-2xx; expose a separate `streamRequest()` returning the raw `Response` for SSE) — depends on T009,T010,T011
+- [ ] T016 [P] Define query keys in `src/lib/queryKeys.ts` (`['me']`, `['chats']`, `['chat', id]`)
+- [ ] T017 [P] Implement `src/i18n/DirectionProvider.tsx` (ltr/rtl context, sets `<html dir>`, persists to localStorage)
+- [ ] T018 [P] Implement toast infra in `src/components/ToastProvider.tsx` + `src/components/Toast.tsx` (transient + retryable variants, shows `request_id`)
+- [ ] T019 [P] Implement out-of-credits banner context in `src/components/Banner.tsx` (persistent; exposes `isOutOfCredits` + setter used to block sending)
+- [ ] T020 Implement `src/auth/AuthProvider.tsx` + `src/auth/useAuth.ts` (seed from `getSession()`, subscribe to `onAuthStateChange`, expose session/user/loading + `signOut`) — depends on T010
+- [ ] T021 Implement route guards in `src/auth/guards.tsx` (`RequireAuth` → redirect `/login`; `RedirectIfAuthed` → redirect `/app`) — depends on T020
+- [ ] T022 Wire providers + router in `src/main.tsx` and `src/App.tsx` (QueryClientProvider, AuthProvider, DirectionProvider, ToastProvider, Banner; routes `/`, `/login`, `/app`, `/app/c/:sessionId`, `*`→`/`) with placeholder pages — depends on T016–T021
+- [ ] T023 Implement `src/components/AppShell.tsx` (sidebar slot + main slot layout, RTL-aware) and shared `src/components/ui/` primitives (Button, IconButton using Material Symbols)
+
+**Checkpoint**: App boots with providers + routing; `npm run test` passes the two unit suites.
+
+---
+
+## Phase 3: User Story 1 - Sign in as an authorized user (Priority: P1) 🎯 MVP
+
+**Goal**: An authorized user signs in and lands in the workspace; signup is clearly restricted.
+
+**Independent Test**: Valid account → reaches `/app` with identity shown; bad credentials → clear error; deactivated account (403 after login) → distinct message; screen states signup is restricted.
+
+- [ ] T024 [P] [US1] Implement `src/api/me.ts` — `getMe()` + `useMe()` query hook (`['me']`) via apiClient
+- [ ] T025 [US1] Build the Login page `src/pages/Login.tsx` matching the "Authorized Access Only" reference (email/password, password visibility toggle, disabled/absent signup with the restricted-access notice, EN/AR + language affordance) using `signInWithPassword`
+- [ ] T026 [US1] Handle login outcomes: Supabase auth error → inline "invalid credentials"; on success call `useMe`/a probe and treat a `403 forbidden` as "account deactivated — contact administrator"; redirect to `/app` on success — depends on T024,T025
+- [ ] T027 [US1] Apply `RedirectIfAuthed` to `/login` and `RequireAuth` to `/app` routes; on `signOut`/expiry route to `/login`
+- [ ] T028 [US1] Render the signed-in user's email in the sidebar identity area of `src/features/sessions/Sidebar.tsx` (credits added in US5)
+
+**Checkpoint**: Auth flow works end to end; workspace reachable only when signed in.
+
+---
+
+## Phase 4: User Story 2 - Ask a question and watch a charted answer stream in (Priority: P1) 🎯 MVP
+
+**Goal**: In a session, send a question and see the reply stream live, with tool status and inline charts. Deferred session creation on first send.
+
+**Independent Test**: In a new chat, send a question → text streams incrementally, a "using {tool}…" indicator appears/clears, any chart renders inline, the turn finalizes. Mid-stream error is shown without losing partial text.
+
+- [ ] T029 [P] [US2] Implement `src/features/chat/PlotlyChart.tsx` — parse `{plotly_json,rtl}` and render via react-plotly.js; when `rtl`, apply RTL layout hints (single path for live + stored charts)
+- [ ] T030 [P] [US2] Implement `src/features/chat/ToolStatus.tsx` (transient "using {tool}…" indicator)
+- [ ] T031 [P] [US2] Implement `src/features/chat/MessageBubble.tsx` (user vs assistant styling per Stitch; renders content + `charts` via PlotlyChart)
+- [ ] T032 [US2] Implement `src/api/sessions.ts` `createSession()` (`POST /chat/new`) and a `sendMessage` stream opener using `apiClient.streamRequest()` to `POST /chat/{id}/message`
+- [ ] T033 [US2] Implement `src/features/chat/useChatStream.ts` — the turn state machine: deferred create (POST /chat/new if no id), open stream, consume `parseSSE`, dispatch text/status/chart/error/done, `isStreaming` gating, pre-stream HTTP-error path via `toUx`, finalize on `done` — depends on T013,T015,T032
+- [ ] T034 [US2] On `done`: append the finalized assistant message, invalidate `['chat',id]` + `['chats']`, and (US5 wiring) trigger `['me']` refetch; navigate to `/app/c/{sessionId}` for a freshly created session
+- [ ] T035 [US2] Implement `src/features/chat/Composer.tsx` (textarea, send button, ≤8000-char guard, send disabled while `isStreaming`) — attachment UI added in US4
+- [ ] T036 [US2] Implement `src/features/chat/MessageList.tsx` + assemble the session view in `src/pages/Workspace.tsx` for `/app/c/:sessionId` and the empty `/app` new-chat state (auto-scroll on new frames)
+
+**Checkpoint**: A user can send a message and watch a charted reply stream in; MVP (US1+US2) is demoable.
+
+---
+
+## Phase 5: User Story 3 - Manage and revisit chat sessions (Priority: P2)
+
+**Goal**: Sidebar lists sessions; user creates/opens/deletes; history (incl. stored charts) reloads faithfully.
+
+**Independent Test**: Create a session via a message, reopen later → full history + charts reappear; delete → leaves the list immediately; untitled session shows a placeholder.
+
+- [ ] T037 [P] [US3] Extend `src/api/sessions.ts` with `listChats()` + `useChats()` (`['chats']`), `getChat(id)` + `useChat(id)` (`['chat',id]`), and `deleteChat(id)` mutation
+- [ ] T038 [US3] Implement `src/features/sessions/SessionListItem.tsx` (title with graceful placeholder when `title===""`, relative last-updated time, active state)
+- [ ] T039 [US3] Complete `src/features/sessions/Sidebar.tsx` — "New Chat" (local draft state, no backend call), session list from `useChats`, navigation to `/app/c/:id`
+- [ ] T040 [US3] Optimistic delete in the Sidebar (remove from `['chats']` cache immediately, rollback on error) — depends on T037
+- [ ] T041 [US3] Load + render history in `src/pages/Workspace.tsx` via `useChat(id)` (messages + stored `charts[]` through the same PlotlyChart; `user_profile` available for US4); `not_found` → "session not found" state
+- [ ] T042 [US3] Ensure new-chat deferred creation inserts the new session into `['chats']` after first `done` (from T034) and reflects backend-generated title/route on invalidation
+
+**Checkpoint**: Full multi-session management with faithful history replay.
+
+---
+
+## Phase 6: User Story 4 - Attach a CV for tailored answers (Priority: P2)
+
+**Goal**: Attach a PDF/Word CV (≤10 MiB), see the filename, send it with the message; invalid files rejected inline.
+
+**Independent Test**: Valid CV → filename shown, next answer is CV-aware; `.txt`/oversize → inline rejection, nothing sent; remove attachment → sends plain message.
+
+- [ ] T043 [P] [US4] Implement `src/api/upload.ts` — `uploadCv(file)` (multipart field `file`) + `useUploadCv()` mutation returning `{file_id, filename}`
+- [ ] T044 [US4] Add attachment UI to `src/features/chat/Composer.tsx` (attach button, client-side validation: extension in .pdf/.docx/.doc + size ≤10 MiB → inline error without upload; show filename chip; remove-attachment control)
+- [ ] T045 [US4] Thread `attached_cv_id` (from a successful upload) into the `MessageRequest` sent by `useChatStream`; clear it after send/removal — depends on T033,T043
+- [ ] T046 [US4] Surface `cv_parsing_failed` (422) and `validation_failed` (400) from upload/send as inline composer errors; optionally display parsed `user_profile` from `useChat` in the session view
+
+**Checkpoint**: CV-grounded answers work; invalid uploads are blocked inline.
+
+---
+
+## Phase 7: User Story 5 - Understand credits and access states (Priority: P2)
+
+**Goal**: Credits visible while healthy; out-of-credits blocks sending with a persistent banner; deactivation/expiry → login; transient/retryable errors handled; every error shows a `request_id`.
+
+**Independent Test**: Healthy → credits shown; exhausted → persistent banner + send blocked; deactivated/expired → `/login`; rapid sends → rate-limit toast; storage/server error → retryable toast; all errors show a reference id.
+
+- [ ] T047 [US5] Render remaining credits in `src/features/sessions/Sidebar.tsx` from `useMe`; refetch `['me']` after each completed turn (wire into T034) and on window focus (React Query `refetchOnWindowFocus`)
+- [ ] T048 [US5] Wire the out-of-credits banner: any `resources_exhausted` (from apiClient or in-stream `error`) sets the Banner context; Composer send is blocked while out of credits — depends on T019,T033
+- [ ] T049 [US5] Wire `forbidden` (403) in `apiClient` to sign out + route `/login` with an explanatory notice — depends on T015,T020
+- [ ] T050 [US5] Route `rate_limited` → transient toast and `storage_unavailable`/`internal_error` → retryable toast via `toUx`/ToastProvider at call sites (send, list, upload, delete)
+- [ ] T051 [US5] Ensure `request_id` is surfaced on every banner/toast/inline error (and logged to console)
+
+**Checkpoint**: Every documented access/error state has a distinct, id-bearing UX; sending is correctly gated.
+
+---
+
+## Phase 8: User Story 6 - Use the app in Arabic / right-to-left (Priority: P3)
+
+**Goal**: A direction toggle mirrors the layout; RTL-marked charts render RTL regardless of app direction.
+
+**Independent Test**: Toggle RTL → sidebar/messages/composer mirror coherently; an Arabic-marked chart renders RTL.
+
+- [ ] T052 [US6] Add a direction toggle control to the header/`AppShell` that flips `DirectionProvider` (persisted); verify sidebar, message alignment, and composer mirror correctly in RTL
+- [ ] T053 [US6] Confirm `PlotlyChart` honors per-chart `rtl` independent of app direction (from T029) and add a mixed LTR-app / RTL-chart verification case
+
+**Checkpoint**: Arabic users can complete a full conversation in RTL.
+
+---
+
+## Phase 9: User Story 7 - Discover the product via the public landing page (Priority: P3)
+
+**Goal**: Public marketing landing at `/`; authed users at `/` are redirected to `/app`; CTAs lead to `/login`.
+
+**Independent Test**: Anonymous at `/` → hero + feature overview + invite-only framing + CTAs; CTA/"Sign In" → `/login`; signed-in at `/` → redirected to `/app`.
+
+- [ ] T054 [US7] Implement `src/pages/Landing.tsx` from `landing.html` (hero, bento feature overview, invite-only framing, CTAs) as clean React using the Tailwind design tokens
+- [ ] T055 [US7] Apply `RedirectIfAuthed` at `/` so signed-in users are sent to `/app`; wire all landing CTAs / "Sign In" to `/login`
+
+**Checkpoint**: Anonymous discovery path complete; authed users skip the landing.
+
+---
+
+## Phase 10: Polish & Cross-Cutting Concerns
+
+**Purpose**: Finalize docs, verify, and clean up.
+
+- [ ] T056 [P] Write `README.md` (overview, local dev from `.env.example`, `npm run dev`, test, and Cloudflare Pages deploy: build `npm run build`, output `dist`, `_redirects`, set `VITE_*`, CORS note)
+- [ ] T057 [P] Add an `.gitignore` entry check (dist/node_modules already ignored) and remove the stale prebuilt `dist/` so the first real build regenerates it
+- [ ] T058 Run `npm run build` and fix any type/build errors; confirm `dist/` output and SPA redirect behavior
+- [ ] T059 Execute `specs/001-jobit-web-app/quickstart.md` verification steps (all 7 layers) against a real backend/test account
+- [ ] T060 [P] Accessibility + polish pass (focus states, keyboard send, tap targets, color contrast, loading/empty states)
+
+---
+
+## Dependencies & Execution Order
+
+### Phase Dependencies
+
+- **Setup (Phase 1)**: no dependencies.
+- **Foundational (Phase 2)**: depends on Setup; BLOCKS all user stories.
+- **US1 (Phase 3)** and **US2 (Phase 4)**: both P1; depend only on Foundational. Together = MVP.
+- **US3 (Phase 5)**: depends on Foundational; builds on US2's session/stream (deferred-create handoff at T034/T042).
+- **US4 (Phase 6)**: depends on Foundational + US2 Composer/stream.
+- **US5 (Phase 7)**: depends on Foundational; wires credits/errors across US1–US4 surfaces.
+- **US6 (Phase 8)**: depends on Foundational + US2 PlotlyChart + AppShell.
+- **US7 (Phase 9)**: depends on Foundational routing/guards.
+- **Polish (Phase 10)**: after all desired stories.
+
+### Within Each User Story
+
+- Mandated unit tests (T012, T014) are written with their modules in Foundational.
+- Models/types before hooks; hooks before UI; core before integration.
+
+### Parallel Opportunities
+
+- Setup: T002–T008 are all [P].
+- Foundational: T009–T014, T016–T019 are [P] (distinct files); T015/T020/T021/T022/T023 have the noted deps.
+- Once Foundational is done, US1 and US2 can proceed in parallel (different files), then US3–US7.
+- Within stories, [P]-marked tasks touch different files and can run together.
+
+---
+
+## Parallel Example: Foundational primitives
+
+```bash
+# Independent foundational modules (different files, no interdeps):
+Task: "Define types in src/types/api.ts"                 # T009
+Task: "Supabase client in src/lib/supabase.ts"           # T010
+Task: "ApiError + toUx in src/lib/apiError.ts"           # T011
+Task: "SSE parser in src/lib/sse.ts"                     # T013
+Task: "Query keys in src/lib/queryKeys.ts"               # T016
+# Then their tests:
+Task: "tests/apiError.test.ts"                           # T012
+Task: "tests/sse.test.ts"                                # T014
+```
+
+---
+
+## Implementation Strategy
+
+### MVP First (US1 + US2)
+
+1. Phase 1 Setup → Phase 2 Foundational (unit tests green).
+2. Phase 3 (US1 auth) + Phase 4 (US2 streaming chat).
+3. **STOP and VALIDATE**: sign in, start a chat, watch a charted reply stream in.
+4. Deploy/demo.
+
+### Incremental Delivery
+
+Foundation → US1+US2 (MVP) → US3 sessions → US4 CV → US5 credits/errors → US6 RTL → US7 landing.
+Each story is an independently testable increment that doesn't break prior ones.
+
+---
+
+## Notes
+
+- [P] = different files, no dependencies. [Story] label maps each task to a spec.md story.
+- Follow the constitution's order (auth → CRUD → streaming → charts → upload → errors); charts
+  live inside US2 (live) and US3 (stored) via one `PlotlyChart` path.
+- Commit after each task or logical group; stop at checkpoints to validate a story independently.
+- The two unit suites (parseSSE, toUx) are the constitution's named review gates — keep them green.
