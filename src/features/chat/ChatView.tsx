@@ -132,8 +132,39 @@ export function ChatView({ sessionId }: { sessionId: string | undefined }) {
     );
   }
 
+  const profile = chatQuery.data?.user_profile ?? null;
+
   return (
     <>
+      {profile ? (
+        <div className="shrink-0 px-md py-sm border-b border-outline-variant bg-surface-container-low flex items-center gap-xs flex-wrap">
+          <span className="material-symbols-outlined text-primary text-[18px]">badge</span>
+          <span className="font-label-caps text-label-caps text-on-surface-variant">
+            CV PROFILE
+          </span>
+          {profile.job_titles.slice(0, 2).map((t) => (
+            <span
+              key={t}
+              className="font-body-sm text-body-sm bg-secondary-container text-on-secondary-container rounded-full px-sm py-[2px]"
+            >
+              {t}
+            </span>
+          ))}
+          {profile.skills.slice(0, 4).map((s) => (
+            <span
+              key={s}
+              className="font-body-sm text-body-sm bg-surface-container-high text-on-surface-variant rounded-full px-sm py-[2px]"
+            >
+              {s}
+            </span>
+          ))}
+          {profile.skills.length > 4 ? (
+            <span className="font-body-sm text-body-sm text-on-surface-variant opacity-70">
+              +{profile.skills.length - 4} more
+            </span>
+          ) : null}
+        </div>
+      ) : null}
       <MessageList
         messages={messages}
         streaming={{
@@ -146,7 +177,7 @@ export function ChatView({ sessionId }: { sessionId: string | undefined }) {
       <Composer
         disabled={isStreaming || isOutOfCredits}
         blockedReason={isOutOfCredits ? "You are out of credits. Sending is disabled." : null}
-        onSend={(content) => void send(content, null)}
+        onSend={(content, attachedCvId) => void send(content, attachedCvId)}
       />
     </>
   );

@@ -125,12 +125,12 @@ Single project at repo root: `src/`, `public/`, `tests/` (or co-located `*.test.
 
 **Independent Test**: Valid CV → filename shown, next answer is CV-aware; `.txt`/oversize → inline rejection, nothing sent; remove attachment → sends plain message.
 
-- [ ] T043 [P] [US4] Implement `src/api/upload.ts` — `uploadCv(file)` (multipart field `file`) + `useUploadCv()` mutation returning `{file_id, filename}`
-- [ ] T044 [US4] Add attachment UI to `src/features/chat/Composer.tsx` (attach button, client-side validation: extension in .pdf/.docx/.doc + size ≤10 MiB → inline error without upload; show filename chip; remove-attachment control)
-- [ ] T045 [US4] Thread `attached_cv_id` (from a successful upload) into the `MessageRequest` sent by `useChatStream`; clear it after send/removal — depends on T033,T043
-- [ ] T046 [US4] Surface `cv_parsing_failed` (422) and `validation_failed` (400) from upload/send as inline composer errors; optionally display parsed `user_profile` from `useChat` in the session view
+- [x] T043 [P] [US4] Implement `src/api/upload.ts` — `uploadCv(file)` (multipart field `file`) + `useUploadCv()` mutation returning `{file_id, filename}`; `validateCvFile()` + `MAX_CV_BYTES`/`ALLOWED_CV_EXTENSIONS`
+- [x] T044 [US4] Add attachment UI to `src/features/chat/Composer.tsx` (attach button + hidden input, client-side validation → inline error without upload, uploading state, filename chip, remove control)
+- [x] T045 [US4] Thread `attached_cv_id` (from a successful upload) into the send via `onSend(content, cvId)` → `useChatStream`; cleared after send
+- [x] T046 [US4] Surface `cv_parsing_failed`/`validation_failed`/storage errors from upload as inline composer errors; display parsed `user_profile` (job titles + skills chips) from `useChat` in a header strip
 
-**Checkpoint**: CV-grounded answers work; invalid uploads are blocked inline.
+**Checkpoint**: ✅ Verified against the real backend — `.txt` rejected inline ("Unsupported file type"); valid PDF uploaded → filename chip; sent with `attached_cv_id` → backend parsed the CV → CV PROFILE strip showed extracted title/skills (Senior Data Analyst · Python, SQL, Excel, Power BI) → CV-tailored role recommendations streamed with live "using query_database…" indicator; attachment cleared after send; zero console errors. Build green, 19/19 unit tests pass.
 
 ---
 
