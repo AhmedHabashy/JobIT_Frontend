@@ -3,11 +3,12 @@ import { AppShell } from "@/components/AppShell";
 import { useAuth } from "@/auth/AuthProvider";
 import { useDirection } from "@/i18n/DirectionProvider";
 import { IconButton } from "@/components/ui/Button";
+import { ChatView } from "@/features/chat/ChatView";
 
 /**
- * Placeholder workspace shell. The sidebar (US3), chat view + composer (US2),
- * and credits (US5) fill this in later. Kept functional here so the authed
- * route, layout, RTL toggle, and identity are verifiable now.
+ * Authenticated workspace: sidebar + a session's conversation. The full session
+ * list (US3), credits (US5), and CV upload (US4) fill the sidebar/composer in
+ * later phases; US2 delivers the streaming chat view.
  */
 export default function Workspace() {
   const { sessionId } = useParams();
@@ -40,7 +41,7 @@ export default function Workspace() {
         </div>
       }
     >
-      <header className="h-16 flex items-center justify-between px-md border-b border-outline-variant">
+      <header className="h-16 flex items-center justify-between px-md border-b border-outline-variant shrink-0">
         <h2 className="font-title-sm text-title-sm">
           {sessionId ? `Session ${sessionId.slice(0, 8)}…` : "New chat"}
         </h2>
@@ -50,12 +51,7 @@ export default function Workspace() {
           onClick={toggleDirection}
         />
       </header>
-      <div className="flex-1 flex items-center justify-center p-md text-center">
-        <p className="font-body-md text-body-md text-on-surface-variant max-w-md">
-          Chat view and composer arrive in US2. Foundational shell is live: auth, routing, RTL
-          toggle, and identity all work.
-        </p>
-      </div>
+      <ChatView sessionId={sessionId} />
     </AppShell>
   );
 }

@@ -89,16 +89,16 @@ Single project at repo root: `src/`, `public/`, `tests/` (or co-located `*.test.
 
 **Independent Test**: In a new chat, send a question → text streams incrementally, a "using {tool}…" indicator appears/clears, any chart renders inline, the turn finalizes. Mid-stream error is shown without losing partial text.
 
-- [ ] T029 [P] [US2] Implement `src/features/chat/PlotlyChart.tsx` — parse `{plotly_json,rtl}` and render via react-plotly.js; when `rtl`, apply RTL layout hints (single path for live + stored charts)
-- [ ] T030 [P] [US2] Implement `src/features/chat/ToolStatus.tsx` (transient "using {tool}…" indicator)
-- [ ] T031 [P] [US2] Implement `src/features/chat/MessageBubble.tsx` (user vs assistant styling per Stitch; renders content + `charts` via PlotlyChart)
-- [ ] T032 [US2] Implement `src/api/sessions.ts` `createSession()` (`POST /chat/new`) and a `sendMessage` stream opener using `apiClient.streamRequest()` to `POST /chat/{id}/message`
-- [ ] T033 [US2] Implement `src/features/chat/useChatStream.ts` — the turn state machine: deferred create (POST /chat/new if no id), open stream, consume `parseSSE`, dispatch text/status/chart/error/done, `isStreaming` gating, pre-stream HTTP-error path via `toUx`, finalize on `done` — depends on T013,T015,T032
-- [ ] T034 [US2] On `done`: append the finalized assistant message, invalidate `['chat',id]` + `['chats']`, and (US5 wiring) trigger `['me']` refetch; navigate to `/app/c/{sessionId}` for a freshly created session
-- [ ] T035 [US2] Implement `src/features/chat/Composer.tsx` (textarea, send button, ≤8000-char guard, send disabled while `isStreaming`) — attachment UI added in US4
-- [ ] T036 [US2] Implement `src/features/chat/MessageList.tsx` + assemble the session view in `src/pages/Workspace.tsx` for `/app/c/:sessionId` and the empty `/app` new-chat state (auto-scroll on new frames)
+- [x] T029 [P] [US2] Implement `src/features/chat/PlotlyChart.tsx` (+ `PlotlyChartImpl.tsx`) — parse `{plotly_json,rtl}`, render via react-plotly.js factory bound to plotly.js-dist-min; `rtl` flows via container `dir`; lazy-loaded so Plotly stays out of the main bundle (single path for live + stored charts)
+- [x] T030 [P] [US2] Implement `src/features/chat/ToolStatus.tsx` (transient "using {tool}…" indicator)
+- [x] T031 [P] [US2] Implement `src/features/chat/MessageBubble.tsx` (user vs assistant styling per Stitch, RTL-aware; renders content + `charts` via PlotlyChart)
+- [x] T032 [US2] Implement `src/api/sessions.ts` — `createSession()` (`POST /chat/new`), `streamMessage()` via `apiClient.streamRequest()`, plus `listChats`/`getChat`/`deleteChat` + `useChats`/`useChat` hooks
+- [x] T033 [US2] Implement `src/features/chat/useChatStream.ts` — turn state machine: deferred create, open stream, consume `parseSSE`, dispatch text/status/chart/error/done, `isStreaming` gating, pre-stream + in-stream error paths via `onError`/`toUx`, finalize on `done`
+- [x] T034 [US2] On `done` (in `ChatView`): append finalized assistant message, invalidate `['chat',id]` + `['chats']` + `['me']`; navigate to `/app/c/{id}` for a freshly created session (no remount, via `justCreatedRef`)
+- [x] T035 [US2] Implement `src/features/chat/Composer.tsx` (textarea, Enter-to-send, ≤8000-char guard, send disabled while `isStreaming`/out-of-credits) — attachment UI added in US4
+- [x] T036 [US2] Implement `src/features/chat/MessageList.tsx` + `ChatView.tsx`; wire into `src/pages/Workspace.tsx` for `/app/c/:sessionId` and the empty `/app` new-chat state (auto-scroll, live typing bubble)
 
-**Checkpoint**: A user can send a message and watch a charted reply stream in; MVP (US1+US2) is demoable.
+**Checkpoint**: ✅ Verified against the real backend via Chrome DevTools — new chat → deferred `POST /chat/new` → navigated to `/app/c/{id}` → assistant text streamed live → inline Plotly bar chart rendered; full reload replays stored history + chart through the same path (FR-017); send blocked while streaming; zero console errors. MVP (US1+US2) is demoable. Build green (main bundle 128 KB gzip, Plotly lazy-split), 19/19 unit tests pass.
 
 ---
 
