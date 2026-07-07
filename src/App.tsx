@@ -1,25 +1,93 @@
+import { useEffect } from "react";
+import { BrowserRouter, Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import { AuthProvider } from "@/auth/AuthProvider";
+import { RedirectIfAuthed, RequireAuth } from "@/auth/guards";
+import { DirectionProvider } from "@/i18n/DirectionProvider";
+import { ToastProvider } from "@/components/ToastProvider";
+import { CreditsBannerProvider, useCredits } from "@/components/Banner";
+import { setApiErrorHandlers } from "@/lib/apiClient";
+import { supabase } from "@/lib/supabase";
+import Landing from "@/pages/Landing";
+import Login from "@/pages/Login";
+import Workspace from "@/pages/Workspace";
+
 /**
- * Placeholder scaffold shell.
- *
- * This is intentionally minimal so `npm run dev` boots and the Stitch design
- * tokens (colors, Geist, Material Symbols) are verifiable. It is replaced in
- * Phase 2 Foundational (task T022) by the real provider + router tree
- * (QueryClientProvider, AuthProvider, DirectionProvider, ToastProvider, Banner).
+ * Bridges the decoupled apiClient error side-effects into React:
+ * - forbidden (403)        → sign out + route to /login
+ * - resources_exhausted    → flip the persistent out-of-credits banner
  */
+function ApiErrorBridge() {
+  const navigate = useNavigate();
+  const { markOutOfCredits } = useCredits();
+
+  useEffect(() => {
+    setApiErrorHandlers({
+      onForbidden: () => {
+        void supabase.auth.signOut().finally(() => navigate("/login", { replace: true }));
+      },
+      onResourcesExhausted: (err) => markOutOfCredits(err.request_id),
+    });
+    return () => setApiErrorHandlers({});
+  }, [navigate, markOutOfCredits]);
+
+  return null;
+}
+
+function AppRoutes() {
+  return (
+    <>
+      <ApiErrorBridge />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <RedirectIfAuthed>
+              <Landing />
+            </RedirectIfAuthed>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <RedirectIfAuthed>
+              <Login />
+            </RedirectIfAuthed>
+          }
+        />
+        <Route
+          path="/app"
+          element={
+            <RequireAuth>
+              <Workspace />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/app/c/:sessionId"
+          element={
+            <RequireAuth>
+              <Workspace />
+            </RequireAuth>
+          }
+        />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </>
+  );
+}
+
 export default function App() {
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center gap-md px-margin-mobile text-center">
-      <div className="inline-flex items-center gap-xs bg-secondary-container text-on-secondary-container px-sm py-xs rounded-full">
-        <span className="material-symbols-outlined text-[18px]">auto_awesome</span>
-        <span className="font-label-caps text-label-caps">SCAFFOLD READY</span>
-      </div>
-      <h1 className="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-primary">
-        Jobit
-      </h1>
-      <p className="font-body-md text-body-md text-on-surface-variant max-w-md">
-        Project scaffold is up. Design system tokens are wired. Implementation begins at
-        Phase&nbsp;2 (Foundational) per <code>specs/001-jobit-web-app/tasks.md</code>.
-      </p>
-    </main>
+    <BrowserRouter>
+      <AuthProvider>
+        <DirectionProvider>
+          <ToastProvider>
+            <CreditsBannerProvider>
+              <AppRoutes />
+            </CreditsBannerProvider>
+          </ToastProvider>
+        </DirectionProvider>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }

@@ -47,23 +47,23 @@ Single project at repo root: `src/`, `public/`, `tests/` (or co-located `*.test.
 
 **Purpose**: Cross-cutting primitives every user story imports. ⚠️ No story work begins until done.
 
-- [ ] T009 [P] Define API + SSE + local-state TypeScript types in `src/types/api.ts` per data-model.md (UserOut, ChatSessionSummary, ChatSessionDetail, Message, Chart, UserProfile, UploadResponse, SessionResponse, MessageRequest, ApiErrorCode, ApiError, SseEvent)
-- [ ] T010 [P] Implement the Supabase browser client in `src/lib/supabase.ts` (single instance; `persistSession: true`, `autoRefreshToken: true`; reads `VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY`)
-- [ ] T011 [P] Implement `ApiError` construction + the `toUx()` mapper in `src/lib/apiError.ts` (map every code → banner | toast-transient | toast-retryable | redirect-login | inline | not_found; each carries `request_id`)
-- [ ] T012 [P] [Test] Unit-test the mapper in `tests/apiError.test.ts` — assert every ApiErrorCode maps to its expected UX directive and preserves `request_id`
-- [ ] T013 [P] Implement the isolated SSE parser `parseSSE(stream)` in `src/lib/sse.ts` (TextDecoder, buffer, split on `"\n\n"`, parse `event:`/multi-line `data:`, ignore comments/keep-alives; async generator of `{event,data}`)
-- [ ] T014 [P] [Test] Unit-test `parseSSE` in `tests/sse.test.ts` — frames split across chunk boundaries, multi-line `data:`, multiple frames per chunk, trailing partial buffer, all five event types
-- [ ] T015 Implement the fetch wrapper in `src/lib/apiClient.ts` (await `supabase.auth.getSession()` and inject fresh `Authorization: Bearer` per call; set `X-Request-ID` uuid; parse JSON; throw typed `ApiError` with `httpStatus` on non-2xx; expose a separate `streamRequest()` returning the raw `Response` for SSE) — depends on T009,T010,T011
-- [ ] T016 [P] Define query keys in `src/lib/queryKeys.ts` (`['me']`, `['chats']`, `['chat', id]`)
-- [ ] T017 [P] Implement `src/i18n/DirectionProvider.tsx` (ltr/rtl context, sets `<html dir>`, persists to localStorage)
-- [ ] T018 [P] Implement toast infra in `src/components/ToastProvider.tsx` + `src/components/Toast.tsx` (transient + retryable variants, shows `request_id`)
-- [ ] T019 [P] Implement out-of-credits banner context in `src/components/Banner.tsx` (persistent; exposes `isOutOfCredits` + setter used to block sending)
-- [ ] T020 Implement `src/auth/AuthProvider.tsx` + `src/auth/useAuth.ts` (seed from `getSession()`, subscribe to `onAuthStateChange`, expose session/user/loading + `signOut`) — depends on T010
-- [ ] T021 Implement route guards in `src/auth/guards.tsx` (`RequireAuth` → redirect `/login`; `RedirectIfAuthed` → redirect `/app`) — depends on T020
-- [ ] T022 Wire providers + router in `src/main.tsx` and `src/App.tsx` (QueryClientProvider, AuthProvider, DirectionProvider, ToastProvider, Banner; routes `/`, `/login`, `/app`, `/app/c/:sessionId`, `*`→`/`) with placeholder pages — depends on T016–T021
-- [ ] T023 Implement `src/components/AppShell.tsx` (sidebar slot + main slot layout, RTL-aware) and shared `src/components/ui/` primitives (Button, IconButton using Material Symbols)
+- [x] T009 [P] Define API + SSE + local-state TypeScript types in `src/types/api.ts` per data-model.md (UserOut, ChatSessionSummary, ChatSessionDetail, Message, Chart, UserProfile, UploadResponse, SessionResponse, MessageRequest, ApiErrorCode, ApiErrorBody, SseEvent, RawSseFrame)
+- [x] T010 [P] Implement the Supabase browser client in `src/lib/supabase.ts` (single instance; `persistSession: true`, `autoRefreshToken: true`; reads `VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY`)
+- [x] T011 [P] Implement `ApiError` construction + the `toUx()` mapper in `src/lib/apiError.ts` (map every code → banner | toast-transient | toast-retryable | redirect-login | inline | not-found; each carries `request_id`; exhaustiveness guard)
+- [x] T012 [P] [Test] Unit-test the mapper in `tests/apiError.test.ts` — every ApiErrorCode → expected UX directive, preserves `request_id`/message (11 tests)
+- [x] T013 [P] Implement the isolated SSE parser `parseSSE(stream)` in `src/lib/sse.ts` (TextDecoder, CRLF-normalize, buffer, split on `"\n\n"`, parse `event:`/multi-line `data:`, ignore comments/keep-alives; async generator of `{event,data}`)
+- [x] T014 [P] [Test] Unit-test `parseSSE` in `tests/sse.test.ts` — chunk-boundary splits, multi-line `data:`, multiple frames per chunk, trailing partial buffer, CRLF, all five event types (8 tests)
+- [x] T015 Implement the fetch wrapper in `src/lib/apiClient.ts` (await `supabase.auth.getSession()` → fresh `Authorization: Bearer` per call; `X-Request-ID` uuid; parse JSON; throw typed `ApiError` with `httpStatus`; decoupled `setApiErrorHandlers` for forbidden/resources_exhausted; separate `streamRequest()` returning raw `Response`)
+- [x] T016 [P] Define query keys in `src/lib/queryKeys.ts` (`['me']`, `['chats']`, `['chat', id]`)
+- [x] T017 [P] Implement `src/i18n/DirectionProvider.tsx` (ltr/rtl context, sets `<html dir>`+`lang`, persists to localStorage)
+- [x] T018 [P] Implement toast infra in `src/components/ToastProvider.tsx` (transient auto-dismiss + retryable-with-retry variants, shows `request_id`; RTL-safe viewport)
+- [x] T019 [P] Implement out-of-credits banner context in `src/components/Banner.tsx` (`CreditsBannerProvider`; persistent banner; `markOutOfCredits`/`clearOutOfCredits`, `isOutOfCredits` used to block sending)
+- [x] T020 Implement `src/auth/AuthProvider.tsx` (seed from `getSession()`, subscribe to `onAuthStateChange`, expose session/user/loading + `signInWithPassword` + `signOut` via `useAuth`)
+- [x] T021 Implement route guards in `src/auth/guards.tsx` (`RequireAuth` → redirect `/login`; `RedirectIfAuthed` → redirect `/app`; loading spinner while session resolves)
+- [x] T022 Wire providers + router in `src/main.tsx` (QueryClientProvider, refetchOnWindowFocus) and `src/App.tsx` (AuthProvider, DirectionProvider, ToastProvider, CreditsBannerProvider; ApiErrorBridge; routes `/`, `/login`, `/app`, `/app/c/:sessionId`, `*`→`/`) with placeholder pages
+- [x] T023 Implement `src/components/AppShell.tsx` (sidebar + main layout, RTL-aware logical props) and shared `src/components/ui/Button.tsx` (Button + IconButton using Material Symbols)
 
-**Checkpoint**: App boots with providers + routing; `npm run test` passes the two unit suites.
+**Checkpoint**: ✅ App boots with all providers + routing; `npm run test` passes both unit suites (19 tests); `npm run build` green. Browser-verified via Chrome DevTools: landing renders for anonymous, `RequireAuth` redirects `/app`→`/login`, zero console errors. Placeholder Login/Landing/Workspace pages in place (filled in US1/US2/US3/US7).
 
 ---
 

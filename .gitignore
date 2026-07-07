@@ -69,3 +69,5 @@ Thumbs.db
 
 /api_docs/
 /stitch_examples/
+/.claude/
+/.specify/
