@@ -156,10 +156,10 @@ Single project at repo root: `src/`, `public/`, `tests/` (or co-located `*.test.
 
 **Independent Test**: Toggle RTL → sidebar/messages/composer mirror coherently; an Arabic-marked chart renders RTL.
 
-- [ ] T052 [US6] Add a direction toggle control to the header/`AppShell` that flips `DirectionProvider` (persisted); verify sidebar, message alignment, and composer mirror correctly in RTL
-- [ ] T053 [US6] Confirm `PlotlyChart` honors per-chart `rtl` independent of app direction (from T029) and add a mixed LTR-app / RTL-chart verification case
+- [x] T052 [US6] Direction toggle in the Workspace header flips `DirectionProvider` (persisted to localStorage, sets `<html dir>`); layout mirrors via logical CSS props (start/end, border-e, ms-auto) — no new code needed beyond Foundational
+- [x] T053 [US6] `PlotlyChart` honors per-chart `rtl` via container `dir`, independent of app direction (verified: English chart renders LTR while the app is in RTL)
 
-**Checkpoint**: Arabic users can complete a full conversation in RTL.
+**Checkpoint**: ✅ Verified via Chrome DevTools — toggling RTL mirrors the whole layout coherently (sidebar → right, messages right-aligned, CV-profile chips + numbered list + composer mirrored); an `rtl:false` chart stays LTR while the app is RTL, confirming per-chart independence. Direction persists across reloads.
 
 ---
 
