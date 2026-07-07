@@ -169,10 +169,10 @@ Single project at repo root: `src/`, `public/`, `tests/` (or co-located `*.test.
 
 **Independent Test**: Anonymous at `/` → hero + feature overview + invite-only framing + CTAs; CTA/"Sign In" → `/login`; signed-in at `/` → redirected to `/app`.
 
-- [ ] T054 [US7] Implement `src/pages/Landing.tsx` from `landing.html` (hero, bento feature overview, invite-only framing, CTAs) as clean React using the Tailwind design tokens
-- [ ] T055 [US7] Apply `RedirectIfAuthed` at `/` so signed-in users are sent to `/app`; wire all landing CTAs / "Sign In" to `/login`
+- [x] T054 [US7] Implement `src/pages/Landing.tsx` from `landing.html` (header, hero with badge + dual CTAs + demand-trends visual, bento feature grid, CTA section, invite-only footer) as clean React using the Tailwind design tokens
+- [x] T055 [US7] `RedirectIfAuthed` at `/` sends signed-in users to `/app` (from T022); all landing CTAs / "Sign In" link to `/login`
 
-**Checkpoint**: Anonymous discovery path complete; authed users skip the landing.
+**Checkpoint**: ✅ Verified via Chrome DevTools — anonymous visitor at `/` sees the full landing (hero, bento features, "Access is restricted to authorized personnel", CTAs); all four CTAs route to `/login`; signed-in user at `/` redirects to `/app`; zero console errors.
 
 ---
 
