@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/apiClient";
 import { queryKeys } from "@/lib/queryKeys";
 import type {
@@ -48,5 +48,28 @@ export function useChat(sessionId: string | undefined) {
     queryKey: sessionId ? queryKeys.chat(sessionId) : ["chat", "none"],
     queryFn: () => getChat(sessionId as string),
     enabled: Boolean(sessionId),
+    retry: false, // a 404 not_found should surface immediately, not retry
+  });
+}
+
+/** Optimistic delete: remove from the sidebar immediately, roll back on error. */
+export function useDeleteChat() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (sessionId: string) => deleteChat(sessionId),
+    onMutate: async (sessionId) => {
+      await qc.cancelQueries({ queryKey: queryKeys.chats });
+      const prev = qc.getQueryData<ChatSessionSummary[]>(queryKeys.chats);
+      qc.setQueryData<ChatSessionSummary[]>(queryKeys.chats, (old) =>
+        (old ?? []).filter((s) => s.session_id !== sessionId),
+      );
+      return { prev };
+    },
+    onError: (_err, _sessionId, ctx) => {
+      if (ctx?.prev) qc.setQueryData(queryKeys.chats, ctx.prev);
+    },
+    onSettled: () => {
+      void qc.invalidateQueries({ queryKey: queryKeys.chats });
+    },
   });
 }

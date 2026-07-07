@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
-import type { ApiError } from "@/lib/apiError";
-import { toUx } from "@/lib/apiError";
+import { ApiError, toUx } from "@/lib/apiError";
 import { queryKeys } from "@/lib/queryKeys";
 import { useChat } from "@/api/sessions";
 import { useChatStream } from "@/features/chat/useChatStream";
@@ -104,6 +103,34 @@ export function ChatView({ sessionId }: { sessionId: string | undefined }) {
     onError,
   });
   streamingNowRef.current = isStreaming;
+
+  // Session deleted elsewhere / invalid id → not-found state (FR: not_found).
+  const notFound =
+    !isStreaming &&
+    Boolean(sessionId) &&
+    ApiError.is(chatQuery.error) &&
+    chatQuery.error.code === "not_found";
+
+  if (notFound) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center gap-sm text-center p-md">
+        <span className="material-symbols-outlined text-[40px] text-on-surface-variant opacity-60">
+          search_off
+        </span>
+        <p className="font-title-sm text-title-sm">Conversation not found</p>
+        <p className="font-body-sm text-body-sm text-on-surface-variant max-w-sm">
+          This conversation no longer exists. It may have been deleted.
+        </p>
+        <button
+          type="button"
+          onClick={() => navigate("/app", { replace: true })}
+          className="mt-sm bg-primary text-on-primary rounded-lg px-md py-sm font-title-sm text-body-md hover:bg-[#004c6e] transition-colors"
+        >
+          Start a new chat
+        </button>
+      </div>
+    );
+  }
 
   return (
     <>

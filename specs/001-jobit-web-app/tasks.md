@@ -108,14 +108,14 @@ Single project at repo root: `src/`, `public/`, `tests/` (or co-located `*.test.
 
 **Independent Test**: Create a session via a message, reopen later → full history + charts reappear; delete → leaves the list immediately; untitled session shows a placeholder.
 
-- [ ] T037 [P] [US3] Extend `src/api/sessions.ts` with `listChats()` + `useChats()` (`['chats']`), `getChat(id)` + `useChat(id)` (`['chat',id]`), and `deleteChat(id)` mutation
-- [ ] T038 [US3] Implement `src/features/sessions/SessionListItem.tsx` (title with graceful placeholder when `title===""`, relative last-updated time, active state)
-- [ ] T039 [US3] Complete `src/features/sessions/Sidebar.tsx` — "New Chat" (local draft state, no backend call), session list from `useChats`, navigation to `/app/c/:id`
-- [ ] T040 [US3] Optimistic delete in the Sidebar (remove from `['chats']` cache immediately, rollback on error) — depends on T037
-- [ ] T041 [US3] Load + render history in `src/pages/Workspace.tsx` via `useChat(id)` (messages + stored `charts[]` through the same PlotlyChart; `user_profile` available for US4); `not_found` → "session not found" state
-- [ ] T042 [US3] Ensure new-chat deferred creation inserts the new session into `['chats']` after first `done` (from T034) and reflects backend-generated title/route on invalidation
+- [x] T037 [P] [US3] Extend `src/api/sessions.ts` with `listChats()` + `useChats()` (`['chats']`), `getChat(id)` + `useChat(id)` (`['chat',id]`, retry:false), and `useDeleteChat()` optimistic mutation
+- [x] T038 [US3] Implement `src/features/sessions/SessionListItem.tsx` (title with graceful "New conversation" placeholder when `title===""`, relative last-updated time via `lib/format.ts`, active state, hover delete)
+- [x] T039 [US3] Implement `src/features/sessions/Sidebar.tsx` — "New Chat" routes to `/app` (no backend call), session list from `useChats` sorted by `updated_at`, navigation to `/app/c/:id`, identity + sign-out footer; wired into Workspace
+- [x] T040 [US3] Optimistic delete in the Sidebar (remove from `['chats']` immediately, rollback on error, invalidate on settle; navigate to `/app` when deleting the active session)
+- [x] T041 [US3] Load + render history in `ChatView` via `useChat(id)` (messages + stored `charts[]` through the same PlotlyChart); `not_found` (404) → "Conversation not found" state with recovery button
+- [x] T042 [US3] New-chat deferred creation inserts the session into `['chats']` after first `done` (via `onDone` invalidation) and reflects the backend-generated title on refetch
 
-**Checkpoint**: Full multi-session management with faithful history replay.
+**Checkpoint**: ✅ Verified against the real backend — sidebar lists sessions with backend-generated titles ("Data Analyst Skills Egypt") + relative times; clicking opens full history + chart with active highlight; optimistic delete removes the row and persists (GET /chats confirms count drops); bogus id → "Conversation not found"; zero console errors. Build green, 19/19 unit tests pass.
 
 ---
 
