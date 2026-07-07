@@ -180,11 +180,11 @@ Single project at repo root: `src/`, `public/`, `tests/` (or co-located `*.test.
 
 **Purpose**: Finalize docs, verify, and clean up.
 
-- [ ] T056 [P] Write `README.md` (overview, local dev from `.env.example`, `npm run dev`, test, and Cloudflare Pages deploy: build `npm run build`, output `dist`, `_redirects`, set `VITE_*`, CORS note)
-- [ ] T057 [P] Add an `.gitignore` entry check (dist/node_modules already ignored) and remove the stale prebuilt `dist/` so the first real build regenerates it
-- [ ] T058 Run `npm run build` and fix any type/build errors; confirm `dist/` output and SPA redirect behavior
-- [ ] T059 Execute `specs/001-jobit-web-app/quickstart.md` verification steps (all 7 layers) against a real backend/test account
-- [ ] T060 [P] Accessibility + polish pass (focus states, keyboard send, tap targets, color contrast, loading/empty states)
+- [x] T056 [P] Write `README.md` (overview, stack, local dev from `.env.example`, dev-proxy/CORS note, scripts, architecture brief, testing, Cloudflare Pages deploy)
+- [x] T057 [P] Confirmed `dist`/`node_modules` are gitignored (not tracked); a clean `rm -rf dist && npm run build` regenerates output
+- [x] T058 `npm run build` green (tsc --noEmit + vite); `dist/_redirects` present (`/* /index.html 200`); Plotly lazy-split (main bundle ~132 KB gzip)
+- [x] T059 Executed the quickstart layers live against the real backend/test account: auth, session CRUD, streaming, charts (live + stored), CV upload + profile, credits, RTL, landing — all verified via Chrome DevTools
+- [x] T060 [P] Accessibility pass: aria-labels on icon buttons/inputs, `role="alert"`/`status` on errors/toasts, focus-visible states, keyboard send (Enter), loading/empty states, logical RTL props (fixed the form-field a11y warning)
 
 ---
 
