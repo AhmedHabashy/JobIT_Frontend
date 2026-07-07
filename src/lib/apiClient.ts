@@ -2,14 +2,34 @@ import { supabase } from "@/lib/supabase";
 import { ApiError } from "@/lib/apiError";
 import type { ApiErrorBody } from "@/types/api";
 
-// In dev, call the app's own origin ("/api/...") so the Vite proxy forwards to
-// the backend server-side (avoids browser CORS). In prod, call the backend
-// directly via VITE_API_BASE_URL (its origin must be whitelisted on the backend).
-const BASE_URL = import.meta.env.DEV ? "" : import.meta.env.VITE_API_BASE_URL;
-
-if (!import.meta.env.DEV && !BASE_URL) {
-  throw new Error("Missing VITE_API_BASE_URL for production build (see .env.example).");
+/**
+ * Resolve the API base URL, with a hard production/dev split:
+ *
+ * - DEV: return "" so calls are same-origin ("/api/...") and the Vite dev proxy
+ *   forwards them to the backend server-side (avoids browser CORS — localhost is
+ *   not in the backend's AUTH__ALLOWED_ORIGINS). This proxy exists ONLY in the
+ *   dev server.
+ * - PROD: require an absolute http(s) URL and call the backend directly. We never
+ *   fall back to the relative "/api" path in production: that dev-only proxy is
+ *   gone, and on static hosting "/api/*" would match the SPA redirect and return
+ *   index.html, silently corrupting every response. Fail fast instead.
+ *
+ * Counter-measure #3 (defense in depth) — even if a misconfigured build slipped
+ * past the build-time guard in vite.config.ts, this throws on first load.
+ */
+function resolveBaseUrl(): string {
+  if (import.meta.env.DEV) return "";
+  const url = import.meta.env.VITE_API_BASE_URL;
+  if (!url || !/^https?:\/\//i.test(url)) {
+    throw new Error(
+      "VITE_API_BASE_URL must be an absolute http(s) URL in production " +
+        "(the dev proxy is unavailable). See .env.example.",
+    );
+  }
+  return url.replace(/\/+$/, ""); // strip any trailing slash
 }
+
+const BASE_URL = resolveBaseUrl();
 
 /**
  * App-level side-effect handlers for cross-cutting error codes. Registered once
