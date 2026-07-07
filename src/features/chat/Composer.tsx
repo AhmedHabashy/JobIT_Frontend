@@ -89,6 +89,8 @@ export function Composer({ disabled, blockedReason, onSend }: ComposerProps) {
 
         <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-xs flex flex-col focus-within:border-primary transition-all">
           <textarea
+            name="message"
+            aria-label="Message"
             className="w-full border-none focus:ring-0 focus:outline-none font-body-md text-body-md resize-none p-sm bg-transparent placeholder:text-on-surface-variant/50"
             placeholder="Ask about career paths, labour laws, or salaries in Egypt…"
             rows={2}
@@ -102,6 +104,8 @@ export function Composer({ disabled, blockedReason, onSend }: ComposerProps) {
               <input
                 ref={fileInputRef}
                 type="file"
+                name="cv"
+                aria-label="CV file"
                 accept={ALLOWED_CV_EXTENSIONS.join(",")}
                 className="hidden"
                 onChange={handleFile}

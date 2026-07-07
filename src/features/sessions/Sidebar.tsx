@@ -2,6 +2,9 @@ import { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/auth/AuthProvider";
 import { useChats, useDeleteChat } from "@/api/sessions";
+import { useMe } from "@/api/me";
+import { useToast } from "@/components/ToastProvider";
+import { ApiError } from "@/lib/apiError";
 import { SessionListItem } from "@/features/sessions/SessionListItem";
 
 /**
@@ -15,6 +18,8 @@ export function Sidebar() {
   const { sessionId: activeId } = useParams();
   const { user, signOut } = useAuth();
   const { data: sessions, isLoading, isError } = useChats();
+  const { data: me } = useMe();
+  const { showToast } = useToast();
   const deleteChat = useDeleteChat();
 
   const sorted = useMemo(
@@ -26,7 +31,15 @@ export function Sidebar() {
   );
 
   function handleDelete(id: string) {
-    deleteChat.mutate(id);
+    deleteChat.mutate(id, {
+      onError: (err) =>
+        showToast({
+          message: ApiError.is(err) ? err.message : "Couldn't delete the conversation.",
+          variant: "retryable",
+          requestId: ApiError.is(err) ? err.request_id : undefined,
+          onRetry: () => handleDelete(id),
+        }),
+    });
     if (id === activeId) navigate("/app", { replace: true });
   }
 
@@ -86,7 +99,16 @@ export function Sidebar() {
         )}
       </nav>
 
-      <div className="p-md mt-auto border-t border-outline-variant">
+      <div className="p-md mt-auto border-t border-outline-variant space-y-sm">
+        {me ? (
+          <div className="flex items-center gap-xs bg-primary-container/10 rounded-lg px-sm py-xs">
+            <span className="material-symbols-outlined text-primary text-[18px]">toll</span>
+            <span className="font-body-sm text-body-sm text-on-surface-variant">
+              <span className="font-bold text-on-surface">{me.credits}</span> credit
+              {me.credits === 1 ? "" : "s"} left
+            </span>
+          </div>
+        ) : null}
         <div className="flex items-center justify-between gap-sm">
           <div className="min-w-0 flex items-center gap-base">
             <div className="w-8 h-8 rounded-full bg-surface-container-highest border border-outline-variant flex items-center justify-center shrink-0">

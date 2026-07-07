@@ -140,13 +140,13 @@ Single project at repo root: `src/`, `public/`, `tests/` (or co-located `*.test.
 
 **Independent Test**: Healthy → credits shown; exhausted → persistent banner + send blocked; deactivated/expired → `/login`; rapid sends → rate-limit toast; storage/server error → retryable toast; all errors show a reference id.
 
-- [ ] T047 [US5] Render remaining credits in `src/features/sessions/Sidebar.tsx` from `useMe`; refetch `['me']` after each completed turn (wire into T034) and on window focus (React Query `refetchOnWindowFocus`)
-- [ ] T048 [US5] Wire the out-of-credits banner: any `resources_exhausted` (from apiClient or in-stream `error`) sets the Banner context; Composer send is blocked while out of credits — depends on T019,T033
-- [ ] T049 [US5] Wire `forbidden` (403) in `apiClient` to sign out + route `/login` with an explanatory notice — depends on T015,T020
-- [ ] T050 [US5] Route `rate_limited` → transient toast and `storage_unavailable`/`internal_error` → retryable toast via `toUx`/ToastProvider at call sites (send, list, upload, delete)
-- [ ] T051 [US5] Ensure `request_id` is surfaced on every banner/toast/inline error (and logged to console)
+- [x] T047 [US5] Render remaining credits in `src/features/sessions/Sidebar.tsx` from `useMe`; refetch `['me']` after each completed turn (via `onDone`) and on window focus (global `refetchOnWindowFocus`)
+- [x] T048 [US5] Out-of-credits banner: any `resources_exhausted` (apiClient `onResourcesExhausted` via `ApiErrorBridge`, or in-stream `error` via `ChatView.onError`) sets the Banner context; Composer send blocked while out of credits
+- [x] T049 [US5] `forbidden` (403) → `ApiErrorBridge` signs out + routes `/login` (from T022)
+- [x] T050 [US5] `rate_limited` → transient toast, `storage_unavailable`/`internal_error` → retryable toast via `toUx`/ToastProvider (stream errors in `ChatView.onError`; delete failure toast with retry in Sidebar; upload inline in Composer)
+- [x] T051 [US5] `request_id` surfaced on banner + toasts (and inline where relevant)
 
-**Checkpoint**: Every documented access/error state has a distinct, id-bearing UX; sending is correctly gated.
+**Checkpoint**: ✅ Credits counter shows live balance from `/me` ("43 credits left") and tracks consumption across turns; forbidden→login verified earlier via sign-out; banner/toast/blocking wiring in place with `request_id`. (Live out-of-credits banner not exercised — would require exhausting the account's 43 credits.) Build green, 19/19 unit tests pass, console clean (fixed a form-field a11y warning).
 
 ---
 
