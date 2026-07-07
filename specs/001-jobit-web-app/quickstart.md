@@ -16,10 +16,17 @@ npm run dev                 # Vite dev server (default http://localhost:5173)
 
 `.env` values (all read from `import.meta.env`):
 ```
-VITE_SUPABASE_URL=https://<project>.supabase.co
+VITE_SUPABASE_URL=https://<project>.supabase.co     # the project API URL, NOT the Postgres connection string
 VITE_SUPABASE_ANON_KEY=<anon key>
 VITE_API_BASE_URL=https://api.ahabashy.com
 ```
+
+> **Dev CORS / proxy.** `localhost` is not in the backend's `AUTH__ALLOWED_ORIGINS`, so
+> the browser cannot call the backend cross-origin during local dev. `vite.config.ts`
+> therefore proxies `/api/*` to `VITE_API_BASE_URL` server-side, and in dev the app calls
+> same-origin `/api/...` (see `src/lib/apiClient.ts`, gated on `import.meta.env.DEV`). No
+> backend change is needed for local dev. **For deployment**, the Pages origin must be added
+> to the backend's `AUTH__ALLOWED_ORIGINS` (production calls `VITE_API_BASE_URL` directly).
 
 ## Verify each layer (matches the constitution's delivery order)
 

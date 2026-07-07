@@ -2,10 +2,13 @@ import { supabase } from "@/lib/supabase";
 import { ApiError } from "@/lib/apiError";
 import type { ApiErrorBody } from "@/types/api";
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+// In dev, call the app's own origin ("/api/...") so the Vite proxy forwards to
+// the backend server-side (avoids browser CORS). In prod, call the backend
+// directly via VITE_API_BASE_URL (its origin must be whitelisted on the backend).
+const BASE_URL = import.meta.env.DEV ? "" : import.meta.env.VITE_API_BASE_URL;
 
-if (!BASE_URL) {
-  throw new Error("Missing VITE_API_BASE_URL (see .env.example).");
+if (!import.meta.env.DEV && !BASE_URL) {
+  throw new Error("Missing VITE_API_BASE_URL for production build (see .env.example).");
 }
 
 /**

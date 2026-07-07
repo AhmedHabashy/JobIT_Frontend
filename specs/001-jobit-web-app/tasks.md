@@ -73,13 +73,13 @@ Single project at repo root: `src/`, `public/`, `tests/` (or co-located `*.test.
 
 **Independent Test**: Valid account → reaches `/app` with identity shown; bad credentials → clear error; deactivated account (403 after login) → distinct message; screen states signup is restricted.
 
-- [ ] T024 [P] [US1] Implement `src/api/me.ts` — `getMe()` + `useMe()` query hook (`['me']`) via apiClient
-- [ ] T025 [US1] Build the Login page `src/pages/Login.tsx` matching the "Authorized Access Only" reference (email/password, password visibility toggle, disabled/absent signup with the restricted-access notice, EN/AR + language affordance) using `signInWithPassword`
-- [ ] T026 [US1] Handle login outcomes: Supabase auth error → inline "invalid credentials"; on success call `useMe`/a probe and treat a `403 forbidden` as "account deactivated — contact administrator"; redirect to `/app` on success — depends on T024,T025
-- [ ] T027 [US1] Apply `RedirectIfAuthed` to `/login` and `RequireAuth` to `/app` routes; on `signOut`/expiry route to `/login`
-- [ ] T028 [US1] Render the signed-in user's email in the sidebar identity area of `src/features/sessions/Sidebar.tsx` (credits added in US5)
+- [x] T024 [P] [US1] Implement `src/api/me.ts` — `getMe()` + `useMe()` query hook (`['me']`) via apiClient
+- [x] T025 [US1] Build the Login page `src/pages/Login.tsx` matching the "Authorized Access Only" reference (email/password, password visibility toggle, disabled Sign Up with the restricted-access notice, loading state) using `signInWithPassword`
+- [x] T026 [US1] Handle login outcomes: Supabase auth error → inline "invalid credentials"; on success probe `getMe()` and treat a `403 forbidden` as "account deactivated — contact administrator"; redirect to `/app` on success (out-of-credits/transient → enter app anyway)
+- [x] T027 [US1] `RedirectIfAuthed` on `/login` + `RequireAuth` on `/app` (from T022); `signOut` routes to `/login`; expiry/403 routed via `ApiErrorBridge`
+- [x] T028 [US1] Render the signed-in user's email in the sidebar identity area of the workspace (credits added in US5)
 
-**Checkpoint**: Auth flow works end to end; workspace reachable only when signed in.
+**Checkpoint**: ✅ Auth flow works end to end against the real backend — invalid credentials → inline error (Supabase token 400); valid login → token 200 + `/api/v1/me` 200 (via dev proxy) → `/app` with `test@jobit.dev` shown; sign out → `/login`; zero console errors. Added a Vite dev proxy for `/api/*` to bypass local CORS (backend doesn't allow the localhost origin).
 
 ---
 
