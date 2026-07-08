@@ -85,18 +85,28 @@ npm run test
 Unit tests cover the two highest-risk isolated modules: the SSE frame parser (`tests/sse.test.ts`)
 and the `ApiError`→UX mapper (`tests/apiError.test.ts`).
 
-## Deploy — Cloudflare Pages
+## Deploy — Cloudflare (static-assets Worker)
+
+Deployed as a static-assets Worker via [`wrangler.jsonc`](./wrangler.jsonc) (connected to
+this GitHub repo, auto-deploys on push to `main`).
 
 - **Build command:** `npm run build`
 - **Build output directory:** `dist`
-- **Environment variables:** set `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`,
-  `VITE_API_BASE_URL` in the Pages project settings.
-- **SPA routing:** [`public/_redirects`](./public/_redirects) contains `/* /index.html 200`
-  so client-side routes resolve on refresh (Vite copies it into `dist/`).
-- **CORS:** add the Pages origin (e.g. `https://your-app.pages.dev` and any custom domain) to
-  the backend's `AUTH__ALLOWED_ORIGINS`.
+- **Deploy command:** `npx wrangler deploy` (uploads `dist/` per `wrangler.jsonc`)
+- **SPA routing:** handled by `wrangler.jsonc` → `assets.not_found_handling:
+  "single-page-application"` (unmatched paths serve `index.html`). Do **not** add a
+  `public/_redirects` file — Cloudflare's Workers asset parser rejects `/* /index.html 200`
+  as an infinite loop.
+- **Environment variables** (Cloudflare project → Settings → Environment variables →
+  Production; baked into the bundle at build time):
+  - `VITE_SUPABASE_URL` — the project API URL (e.g. `https://<ref>.supabase.co`)
+  - `VITE_SUPABASE_ANON_KEY` — the public anon key
+  - `VITE_API_BASE_URL` — the backend base URL (the build **fails** if this is missing)
+- **CORS:** add the deployed origin (e.g. `https://jobit.<subdomain>.workers.dev` and any
+  custom domain) to the backend's `AUTH__ALLOWED_ORIGINS` — the live app calls the backend
+  directly (no dev proxy).
 
 ```bash
-npm run build   # outputs dist/
-# then deploy dist/ to Cloudflare Pages (dashboard or `wrangler pages deploy dist`)
+npm run build           # outputs dist/
+npx wrangler deploy     # uploads dist/ as a static-assets Worker (or let CI do it on push)
 ```
