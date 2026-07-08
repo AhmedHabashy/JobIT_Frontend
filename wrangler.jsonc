@@ -1,0 +1,21 @@
+{
+  // Cloudflare deployment config for the JobIT static SPA.
+  //
+  // This is a STATIC-ASSETS-ONLY Worker (no `main` script): `wrangler deploy`
+  // just uploads the built `dist/` directory. Declaring `assets` explicitly
+  // stops Cloudflare from trying to auto-configure a Vite-framework Worker,
+  // which requires Vite >= 6 (we build with Vite 5). `single-page-application`
+  // serves index.html for any unmatched path — the SPA-routing equivalent of
+  // public/_redirects (`/* /index.html 200`).
+  //
+  // NOTE: the VITE_* variables are baked into the bundle at BUILD time by Vite,
+  // so they must be set in the Cloudflare project's environment variables (build
+  // settings), not here.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "jobit",
+  "compatibility_date": "2026-07-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"
+  }
+}
