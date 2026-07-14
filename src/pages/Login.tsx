@@ -140,7 +140,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full bg-primary hover:bg-[#004c6e] text-on-primary font-headline-md text-[18px] py-sm rounded-lg transition-all active:scale-[0.98] disabled:opacity-60 disabled:active:scale-100 flex items-center justify-center gap-base"
+              className="w-full bg-primary hover:bg-primary-hover text-on-primary font-title-sm text-[18px] py-sm rounded-lg transition-all active:scale-[0.98] disabled:opacity-60 disabled:active:scale-100 flex items-center justify-center gap-base"
             >
               {submitting ? (
                 <>

@@ -128,7 +128,7 @@ export function Sidebar() {
             aria-label="Sign out"
             title="Sign out"
             onClick={() => void signOut()}
-            className="material-symbols-outlined text-[20px] text-on-surface-variant hover:text-primary shrink-0"
+            className="material-symbols-outlined text-[20px] text-on-surface-variant hover:text-primary shrink-0 p-xs -m-xs rounded-lg hover:bg-surface-container-high transition-colors"
           >
             logout
           </button>

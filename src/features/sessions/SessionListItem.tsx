@@ -43,7 +43,7 @@ export function SessionListItem({ session, active, onSelect, onDelete }: Session
           e.stopPropagation();
           onDelete();
         }}
-        className="material-symbols-outlined text-[18px] shrink-0 opacity-0 group-hover:opacity-70 hover:!opacity-100 hover:text-error transition-opacity"
+        className="material-symbols-outlined text-[18px] shrink-0 p-xs -m-xs opacity-60 hover:text-error md:opacity-0 md:group-hover:opacity-70 md:hover:!opacity-100 transition-opacity"
       >
         delete
       </button>

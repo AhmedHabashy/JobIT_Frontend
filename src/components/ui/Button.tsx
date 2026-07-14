@@ -1,11 +1,12 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 
-type Variant = "primary" | "secondary" | "ghost" | "outline";
+type Variant = "primary" | "accent" | "secondary" | "ghost" | "outline";
 
 const VARIANTS: Record<Variant, string> = {
-  primary: "bg-primary text-on-primary hover:bg-[#004c6e] active:scale-[0.98]",
+  primary: "bg-primary text-on-primary hover:bg-primary-hover active:scale-[0.98]",
+  accent: "bg-accent text-on-accent hover:brightness-95 active:scale-[0.98]",
   secondary:
-    "bg-secondary-container text-on-secondary-container hover:opacity-90 active:scale-[0.98]",
+    "bg-secondary-container text-on-secondary-container hover:brightness-[0.97] active:scale-[0.98]",
   ghost: "text-on-surface-variant hover:bg-surface-container-high",
   outline: "border border-outline-variant text-on-surface-variant hover:bg-surface-container-low",
 };

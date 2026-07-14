@@ -84,7 +84,7 @@ export default function Landing() {
               <div className="flex flex-wrap gap-md pt-base">
                 <Link
                   to="/login"
-                  className="bg-primary-container text-on-primary-container px-xl py-md rounded-lg font-title-sm text-title-sm flex items-center gap-base transition-all hover:shadow-md"
+                  className="bg-accent text-on-accent px-xl py-md rounded-lg font-title-sm text-title-sm flex items-center gap-base shadow-sm transition-all hover:brightness-95 hover:shadow-md"
                 >
                   Explore Career Coach
                   <span className="material-symbols-outlined">trending_flat</span>
@@ -108,7 +108,7 @@ export default function Landing() {
                     {[12, 24, 32, 40, 48].map((h) => (
                       <div
                         key={h}
-                        className="flex-1 bg-primary rounded-t-sm"
+                        className="flex-1 rounded-t-sm bg-gradient-to-t from-primary to-accent"
                         style={{ height: `${h * 3}px` }}
                       />
                     ))}

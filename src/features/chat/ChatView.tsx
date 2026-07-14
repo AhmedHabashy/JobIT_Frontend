@@ -124,7 +124,7 @@ export function ChatView({ sessionId }: { sessionId: string | undefined }) {
         <button
           type="button"
           onClick={() => navigate("/app", { replace: true })}
-          className="mt-sm bg-primary text-on-primary rounded-lg px-md py-sm font-title-sm text-body-md hover:bg-[#004c6e] transition-colors"
+          className="mt-sm bg-primary text-on-primary rounded-lg px-md py-sm font-title-sm text-body-md hover:bg-primary-hover transition-colors"
         >
           Start a new chat
         </button>
