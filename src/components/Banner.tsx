@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
 import type { ReactNode } from "react";
+import { useLanguage } from "@/i18n/LanguageProvider";
 
 interface CreditsContextValue {
   isOutOfCredits: boolean;
@@ -43,6 +44,7 @@ export function CreditsBannerProvider({ children }: { children: ReactNode }) {
 }
 
 function OutOfCreditsBanner({ requestId }: { requestId: string | null }) {
+  const { t } = useLanguage();
   return (
     <div
       role="alert"
@@ -50,8 +52,7 @@ function OutOfCreditsBanner({ requestId }: { requestId: string | null }) {
     >
       <span className="material-symbols-outlined text-[20px]">credit_card_off</span>
       <p className="font-body-sm text-body-sm">
-        Your account is out of credits and has been deactivated. Contact your administrator to top
-        up. Sending is disabled until credits are restored.
+        {t("banner.outOfCredits")}
         {requestId ? <span className="opacity-70"> (ref: {requestId})</span> : null}
       </p>
     </div>

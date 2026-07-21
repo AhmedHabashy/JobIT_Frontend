@@ -5,7 +5,7 @@ import { PlotlyChart } from "@/features/chat/PlotlyChart";
 function Avatar({ role }: { role: Message["role"] }) {
   if (role === "assistant") {
     return (
-      <div className="w-10 h-10 rounded-full bg-primary shrink-0 flex items-center justify-center text-on-primary">
+      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent shrink-0 flex items-center justify-center text-on-primary shadow-md shadow-primary/30">
         <span className="material-symbols-outlined">smart_toy</span>
       </div>
     );
@@ -29,7 +29,7 @@ export function MessageBubble({
   children,
 }: {
   role: Message["role"];
-  content: string;
+  content: ReactNode;
   charts?: Chart[] | null;
   children?: ReactNode;
 }) {

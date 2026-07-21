@@ -1,5 +1,6 @@
 import type { ChatSessionSummary } from "@/types/api";
 import { formatRelativeTime } from "@/lib/format";
+import { useLanguage } from "@/i18n/LanguageProvider";
 
 interface SessionListItemProps {
   session: ChatSessionSummary;
@@ -13,7 +14,8 @@ interface SessionListItemProps {
  * shows a neutral placeholder rather than an empty row (FR-009).
  */
 export function SessionListItem({ session, active, onSelect, onDelete }: SessionListItemProps) {
-  const title = session.title.trim() || "New conversation";
+  const { t, language } = useLanguage();
+  const title = session.title.trim() || t("session.untitled");
 
   return (
     <div
@@ -31,14 +33,14 @@ export function SessionListItem({ session, active, onSelect, onDelete }: Session
         </p>
         {session.updated_at ? (
           <p className="font-label-caps text-[11px] opacity-60">
-            {formatRelativeTime(session.updated_at)}
+            {formatRelativeTime(session.updated_at, language)}
           </p>
         ) : null}
       </div>
       <button
         type="button"
-        aria-label="Delete conversation"
-        title="Delete conversation"
+        aria-label={t("session.delete")}
+        title={t("session.delete")}
         onClick={(e) => {
           e.stopPropagation();
           onDelete();

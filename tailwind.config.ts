@@ -13,78 +13,78 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Surfaces — warm limestone family
-        surface: "#f5f1e8",
-        background: "#f5f1e8",
+        // Surfaces — cool light
+        surface: "#f5f7fc",
+        background: "#f5f7fc",
         "surface-bright": "#ffffff",
-        "surface-dim": "#e5decf",
+        "surface-dim": "#e7ecf5",
         "surface-container-lowest": "#ffffff",
-        "surface-container-low": "#fbf8f1",
-        "surface-container": "#f0eadd",
-        "surface-container-high": "#e9e1d2",
-        "surface-container-highest": "#e1d8c7",
-        "surface-variant": "#eae3d5",
-        "surface-tint": "#123a5a",
+        "surface-container-low": "#fbfcfe",
+        "surface-container": "#eef2fa",
+        "surface-container-high": "#e7ecf5",
+        "surface-container-highest": "#dfe6f1",
+        "surface-variant": "#e9eef7",
+        "surface-tint": "#1f6bff",
 
         // Text / ink
-        "on-surface": "#1e2a32",
-        "on-background": "#1e2a32",
-        "on-surface-variant": "#55606a",
+        "on-surface": "#111726",
+        "on-background": "#111726",
+        "on-surface-variant": "#5f6b7d",
 
         // Lines
-        outline: "#94897a",
-        "outline-variant": "#ded6c7",
+        outline: "#9aa6ba",
+        "outline-variant": "#d9e0ec",
 
-        // Primary — Nile lapis
-        primary: "#123a5a",
+        // Primary — electric blue
+        primary: "#1f6bff",
         "on-primary": "#ffffff",
-        "primary-hover": "#0e2e48",
-        "primary-container": "#1e5687",
-        "on-primary-container": "#eaf2f9",
-        "primary-fixed": "#cfe3f2",
-        "primary-fixed-dim": "#8fbfe0",
-        "on-primary-fixed": "#001e30",
-        "on-primary-fixed-variant": "#0e2e48",
-        "inverse-primary": "#8fbfe0",
+        "primary-hover": "#1550cf",
+        "primary-container": "#dbe7ff",
+        "on-primary-container": "#0b2f7a",
+        "primary-fixed": "#dbe7ff",
+        "primary-fixed-dim": "#9cc0ff",
+        "on-primary-fixed": "#06225e",
+        "on-primary-fixed-variant": "#1550cf",
+        "inverse-primary": "#9cc0ff",
 
-        // Accent — Egyptian gold (dark ink on gold; darker gold for gold-as-text)
-        accent: "#c6892b",
-        "on-accent": "#26303a",
-        "accent-strong": "#8a5e15",
-        tertiary: "#b07a1e",
+        // Accent — cyan
+        accent: "#0bc5d6",
+        "on-accent": "#04333a",
+        "accent-strong": "#068a97",
+        tertiary: "#0bc5d6",
         "on-tertiary": "#ffffff",
-        "tertiary-container": "#f3e4c6",
-        "on-tertiary-container": "#5e3f12",
-        "tertiary-fixed": "#f3e4c6",
-        "tertiary-fixed-dim": "#e6c98a",
-        "on-tertiary-fixed": "#3a2708",
-        "on-tertiary-fixed-variant": "#5e3f12",
+        "tertiary-container": "#c9f2f6",
+        "on-tertiary-container": "#05343b",
+        "tertiary-fixed": "#c9f2f6",
+        "tertiary-fixed-dim": "#7fdfe8",
+        "on-tertiary-fixed": "#04333a",
+        "on-tertiary-fixed-variant": "#068a97",
 
-        // Secondary — palm green (positive) + warm pale-gold containers/chips
-        secondary: "#2e7d5b",
+        // Secondary — positive green + blue-tinted containers/chips
+        secondary: "#0e9f6e",
         "on-secondary": "#ffffff",
-        "secondary-container": "#f3e4c6",
-        "on-secondary-container": "#6e4a15",
-        "secondary-fixed": "#f3e4c6",
-        "secondary-fixed-dim": "#e6c98a",
-        "on-secondary-fixed": "#3a2708",
-        "on-secondary-fixed-variant": "#5e3f12",
+        "secondary-container": "#dbe7ff",
+        "on-secondary-container": "#0b2f7a",
+        "secondary-fixed": "#dbe7ff",
+        "secondary-fixed-dim": "#9cc0ff",
+        "on-secondary-fixed": "#06225e",
+        "on-secondary-fixed-variant": "#1550cf",
 
         // Error
-        error: "#b3261e",
+        error: "#dc2626",
         "on-error": "#ffffff",
-        "error-container": "#f9dedc",
-        "on-error-container": "#8c1d18",
+        "error-container": "#fde8e8",
+        "on-error-container": "#991b1b",
 
         // Inverse
-        "inverse-surface": "#2b333a",
-        "inverse-on-surface": "#f3efe6",
+        "inverse-surface": "#1b2233",
+        "inverse-on-surface": "#eef2fa",
       },
       borderRadius: {
-        DEFAULT: "0.125rem",
-        lg: "0.25rem",
-        xl: "0.5rem",
-        full: "0.75rem",
+        DEFAULT: "0.25rem",
+        lg: "0.5rem",
+        xl: "0.875rem",
+        full: "9999px",
       },
       spacing: {
         md: "24px",
@@ -103,12 +103,11 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["Geist", "system-ui", "sans-serif"],
-        // Display / headline / wordmark → Fraunces (warm old-style serif).
-        display: ["Fraunces", "Georgia", "serif"],
-        "display-lg": ["Fraunces", "Georgia", "serif"],
-        "display-lg-mobile": ["Fraunces", "Georgia", "serif"],
-        "headline-md": ["Fraunces", "Georgia", "serif"],
-        // Body / UI / data → Geist.
+        // Kinetic identity — Geist everywhere (bold weights carry the display).
+        display: ["Geist", "system-ui", "sans-serif"],
+        "display-lg": ["Geist", "system-ui", "sans-serif"],
+        "display-lg-mobile": ["Geist", "system-ui", "sans-serif"],
+        "headline-md": ["Geist", "system-ui", "sans-serif"],
         "body-md": ["Geist", "system-ui", "sans-serif"],
         "label-caps": ["Geist", "system-ui", "sans-serif"],
         "body-sm": ["Geist", "system-ui", "sans-serif"],

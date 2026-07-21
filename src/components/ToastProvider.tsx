@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
+import { useLanguage } from "@/i18n/LanguageProvider";
 
 export type ToastVariant = "transient" | "retryable" | "info";
 
@@ -61,45 +62,46 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 }
 
 function ToastViewport({ toasts, onDismiss }: { toasts: Toast[]; onDismiss: (id: number) => void }) {
+  const { t } = useLanguage();
   if (toasts.length === 0) return null;
   return (
     <div className="fixed bottom-md end-md z-50 flex flex-col gap-sm w-[min(360px,calc(100vw-2rem))]">
-      {toasts.map((t) => (
+      {toasts.map((toast) => (
         <div
-          key={t.id}
+          key={toast.id}
           role="status"
           className="bg-inverse-surface text-inverse-on-surface rounded-xl p-sm shadow-lg flex flex-col gap-xs"
         >
           <div className="flex items-start gap-sm">
             <span className="material-symbols-outlined text-[20px] mt-[2px]">
-              {t.variant === "retryable" ? "error" : "info"}
+              {toast.variant === "retryable" ? "error" : "info"}
             </span>
-            <p className="font-body-sm text-body-sm flex-1">{t.message}</p>
+            <p className="font-body-sm text-body-sm flex-1">{toast.message}</p>
             <button
               type="button"
-              aria-label="Dismiss"
+              aria-label={t("toast.dismiss")}
               className="material-symbols-outlined text-[18px] opacity-70 hover:opacity-100"
-              onClick={() => onDismiss(t.id)}
+              onClick={() => onDismiss(toast.id)}
             >
               close
             </button>
           </div>
           <div className="flex items-center justify-between ps-[28px]">
-            {t.requestId ? (
-              <span className="font-label-caps text-[10px] opacity-60">ref: {t.requestId}</span>
+            {toast.requestId ? (
+              <span className="font-label-caps text-[10px] opacity-60">ref: {toast.requestId}</span>
             ) : (
               <span />
             )}
-            {t.variant === "retryable" && t.onRetry ? (
+            {toast.variant === "retryable" && toast.onRetry ? (
               <button
                 type="button"
                 className="font-label-caps text-label-caps text-primary-fixed-dim hover:underline"
                 onClick={() => {
-                  t.onRetry?.();
-                  onDismiss(t.id);
+                  toast.onRetry?.();
+                  onDismiss(toast.id);
                 }}
               >
-                Retry
+                {t("toast.retry")}
               </button>
             ) : null}
           </div>

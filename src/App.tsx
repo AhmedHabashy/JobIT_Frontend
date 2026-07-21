@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { BrowserRouter, Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { AuthProvider } from "@/auth/AuthProvider";
 import { RedirectIfAuthed, RequireAuth } from "@/auth/guards";
-import { DirectionProvider } from "@/i18n/DirectionProvider";
+import { LanguageProvider } from "@/i18n/LanguageProvider";
 import { ToastProvider } from "@/components/ToastProvider";
 import { CreditsBannerProvider, useCredits } from "@/components/Banner";
 import { setApiErrorHandlers } from "@/lib/apiClient";
@@ -38,14 +38,9 @@ function AppRoutes() {
     <>
       <ApiErrorBridge />
       <Routes>
-        <Route
-          path="/"
-          element={
-            <RedirectIfAuthed>
-              <Landing />
-            </RedirectIfAuthed>
-          }
-        />
+        {/* Landing stays reachable when signed in so the workspace "Home"
+            link works; the page adapts its CTAs for authed visitors. */}
+        <Route path="/" element={<Landing />} />
         <Route
           path="/login"
           element={
@@ -80,13 +75,13 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <DirectionProvider>
+        <LanguageProvider>
           <ToastProvider>
             <CreditsBannerProvider>
               <AppRoutes />
             </CreditsBannerProvider>
           </ToastProvider>
-        </DirectionProvider>
+        </LanguageProvider>
       </AuthProvider>
     </BrowserRouter>
   );
