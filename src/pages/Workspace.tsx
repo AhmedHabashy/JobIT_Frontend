@@ -1,7 +1,8 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { AppShell, useDrawer } from "@/components/AppShell";
-import { useDirection } from "@/i18n/DirectionProvider";
+import { useLanguage } from "@/i18n/LanguageProvider";
 import { IconButton } from "@/components/ui/Button";
+import { Brand } from "@/components/Brand";
 import { Sidebar } from "@/features/sessions/Sidebar";
 import { ChatView } from "@/features/chat/ChatView";
 
@@ -26,24 +27,33 @@ export default function Workspace() {
  * where the sidebar rail is collapsed.
  */
 function WorkspaceHeader({ sessionId }: { sessionId: string | undefined }) {
-  const { toggleDirection, isRtl } = useDirection();
+  const { toggleLanguage, t } = useLanguage();
   const openDrawer = useDrawer();
 
   return (
     <header className="h-16 flex items-center gap-sm px-md border-b border-outline-variant bg-surface-container-low shrink-0">
       <IconButton
         icon="menu"
-        label="Open menu"
+        label={t("workspace.openMenu")}
         onClick={openDrawer}
         className="md:hidden -ms-xs"
       />
-      <h2 className="font-title-sm text-title-sm truncate flex-1 min-w-0">
-        {sessionId ? `Session ${sessionId.slice(0, 8)}…` : "New chat"}
+      <Link
+        to="/"
+        aria-label={t("workspace.home")}
+        title={t("workspace.home")}
+        className="shrink-0 hover:opacity-80 transition-opacity"
+      >
+        <Brand />
+      </Link>
+      <span className="h-6 w-px bg-outline-variant shrink-0 mx-xs" aria-hidden="true" />
+      <h2 className="font-title-sm text-title-sm truncate flex-1 min-w-0 text-on-surface-variant">
+        {sessionId ? `${t("workspace.session")} ${sessionId.slice(0, 8)}…` : t("workspace.newChat")}
       </h2>
       <IconButton
         icon="translate"
-        label={isRtl ? "Switch to LTR" : "Switch to RTL"}
-        onClick={toggleDirection}
+        label={t("workspace.toggleLang")}
+        onClick={toggleLanguage}
       />
     </header>
   );

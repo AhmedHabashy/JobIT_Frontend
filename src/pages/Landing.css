@@ -1,0 +1,798 @@
+/* Landing page — "Interactive & Kinetic" redesign. Scoped under .jobit-landing.
+   Motion is the identity: a live, auto-cycling, hover-interactive demand chart,
+   ambient movement, an electric blue-to-cyan gradient system on a cool-light
+   ground, and a bold Geist display face (distinct from the serif directions). */
+.jobit-landing {
+  --bg: #f5f7fc;
+  --bg-2: #eef2fa;
+  --card: #ffffff;
+  --ink: #111726;
+  --ink-2: #3b4454;
+  --muted: #64708128;
+  --muted-c: #5f6b7d;
+  --line: #e4e9f2;
+  --line-2: #d4dcea;
+  --blue: #1f6bff;
+  --blue-deep: #1550cf;
+  --cyan: #0bc5d6;
+  --gold: #f0a819;
+  --ink-grad: linear-gradient(90deg, #1f6bff, #0bc5d6);
+  --shadow: 0 10px 30px rgba(31, 107, 255, 0.1), 0 2px 8px rgba(16, 23, 38, 0.06);
+  --shadow-lg: 0 30px 70px rgba(31, 107, 255, 0.18), 0 6px 18px rgba(16, 23, 38, 0.08);
+
+  position: relative;
+  min-height: 100vh;
+  color: var(--ink);
+  background:
+    radial-gradient(900px 500px at 90% -10%, rgba(11, 197, 214, 0.12), transparent 60%),
+    radial-gradient(800px 460px at -5% 0%, rgba(31, 107, 255, 0.1), transparent 55%),
+    var(--bg);
+  overflow-x: hidden;
+}
+.jobit-landing a {
+  color: inherit;
+  text-decoration: none;
+}
+.jobit-landing .wrap {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+}
+
+/* Nav */
+.jobit-landing .lnav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(245, 247, 252, 0.8);
+  backdrop-filter: saturate(150%) blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.jobit-landing .lnav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+}
+.jobit-landing .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+.jobit-landing .brand .dotmark {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: var(--ink-grad);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 4px 12px rgba(31, 107, 255, 0.4);
+  position: relative;
+}
+.jobit-landing .brand .dotmark::after {
+  content: "";
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #fff;
+}
+.jobit-landing .brand .word {
+  font-family: "Geist", system-ui, sans-serif;
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.jobit-landing .brand .word b {
+  font-weight: 800;
+  background: var(--ink-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.jobit-landing .lnav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.jobit-landing .langtoggle {
+  display: inline-flex;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--card);
+}
+.jobit-landing .langtoggle button {
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 7px 13px;
+  border: 0;
+  background: transparent;
+  color: var(--muted-c);
+  cursor: pointer;
+}
+.jobit-landing .langtoggle button.active {
+  background: var(--ink-grad);
+  color: #fff;
+}
+
+/* Buttons */
+.jobit-landing .lbtn {
+  font: inherit;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  border-radius: 999px;
+  padding: 11px 22px;
+  border: 1px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.14s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+.jobit-landing .lbtn:active {
+  transform: scale(0.98);
+}
+.jobit-landing .lbtn-grad {
+  background: var(--ink-grad);
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(31, 107, 255, 0.35);
+}
+.jobit-landing .lbtn-grad:hover {
+  box-shadow: 0 12px 32px rgba(31, 107, 255, 0.5);
+  transform: translateY(-1px);
+}
+.jobit-landing .lbtn-soft {
+  background: var(--card);
+  color: var(--ink);
+  border-color: var(--line-2);
+}
+.jobit-landing .lbtn-soft:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+.jobit-landing .lbtn-sm {
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+/* Hero */
+.jobit-landing .hero {
+  padding: 64px 0 40px;
+}
+.jobit-landing .hero-grid {
+  display: grid;
+  grid-template-columns: 0.92fr 1.08fr;
+  gap: 48px;
+  align-items: center;
+}
+.jobit-landing .stagger > * {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.jobit-landing.loaded .stagger > * {
+  opacity: 1;
+  transform: none;
+}
+.jobit-landing.loaded .stagger > *:nth-child(1) { transition-delay: 0.04s; }
+.jobit-landing.loaded .stagger > *:nth-child(2) { transition-delay: 0.12s; }
+.jobit-landing.loaded .stagger > *:nth-child(3) { transition-delay: 0.2s; }
+.jobit-landing.loaded .stagger > *:nth-child(4) { transition-delay: 0.28s; }
+.jobit-landing.loaded .stagger > *:nth-child(5) { transition-delay: 0.36s; }
+
+.jobit-landing .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--blue-deep);
+  background: rgba(31, 107, 255, 0.09);
+  border: 1px solid rgba(31, 107, 255, 0.2);
+  padding: 6px 13px;
+  border-radius: 999px;
+}
+.jobit-landing .eyebrow .edot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(11, 197, 214, 0.2);
+  animation: jobitBlink 2.4s ease-in-out infinite;
+}
+@keyframes jobitBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+.jobit-landing h1.title {
+  font-family: "Geist", system-ui, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  font-size: clamp(40px, 5.4vw, 62px);
+  line-height: 1.02;
+  margin: 20px 0 20px;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.jobit-landing h1.title .grad {
+  background: var(--ink-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.jobit-landing .lede {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ink-2);
+  max-width: 40ch;
+  margin: 0 0 28px;
+}
+.jobit-landing .cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.jobit-landing .trust {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 28px;
+  color: var(--muted-c);
+  font-size: 13.5px;
+}
+.jobit-landing .trust .seal {
+  width: 27px;
+  height: 27px;
+  border-radius: 8px;
+  background: var(--ink-grad);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-family: "Geist", system-ui, sans-serif;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+/* Interactive chart card */
+.jobit-landing .kcard {
+  position: relative;
+  overflow: hidden;
+  border-radius: 22px;
+  padding: 22px 24px 20px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  transform: translateY(20px) scale(0.99);
+  transition: opacity 0.7s ease 0.2s, transform 0.7s ease 0.2s;
+}
+.jobit-landing.loaded .kcard {
+  opacity: 1;
+  transform: none;
+}
+.jobit-landing .kcard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -30%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(11, 197, 214, 0.07), transparent);
+  animation: jobitSheen 6s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes jobitSheen {
+  0% { left: -60%; }
+  55%, 100% { left: 120%; }
+}
+.jobit-landing .kcard-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  position: relative;
+  z-index: 1;
+  min-height: 56px;
+}
+.jobit-landing .kcard-head .klabel {
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted-c);
+  font-weight: 700;
+}
+.jobit-landing .kcard-head .kname {
+  font-family: "Geist", system-ui, sans-serif;
+  font-weight: 800;
+  font-size: 24px;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  margin-top: 4px;
+}
+.jobit-landing .kcard-head .kright {
+  text-align: end;
+}
+.jobit-landing .kcard-head .kval {
+  font-family: "Geist", system-ui, sans-serif;
+  font-weight: 800;
+  font-size: 30px;
+  line-height: 1;
+  background: var(--ink-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-variant-numeric: tabular-nums;
+}
+.jobit-landing .kcard-head .kcap {
+  font-size: 11px;
+  color: var(--muted-c);
+  letter-spacing: 0.03em;
+  margin-top: 2px;
+}
+.jobit-landing .kplot {
+  position: relative;
+  z-index: 1;
+  margin-top: 10px;
+}
+.jobit-landing .kplot svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.jobit-landing .kplot .kgrid line {
+  stroke: var(--line);
+  stroke-width: 1;
+}
+.jobit-landing .kplot .kscan {
+  stroke: rgba(11, 197, 214, 0.5);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 4;
+}
+.jobit-landing .kplot .karea {
+  fill: url(#jobitKGrad);
+}
+.jobit-landing .kplot .kline {
+  fill: none;
+  stroke: url(#jobitKStroke);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.jobit-landing .kplot .kdot {
+  fill: #fff;
+  stroke: var(--blue);
+  stroke-width: 3;
+}
+.jobit-landing .kplot .kdotpulse {
+  fill: var(--cyan);
+  opacity: 0.3;
+}
+.jobit-landing .kpills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+  position: relative;
+  z-index: 1;
+}
+.jobit-landing .kpill {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 999px;
+  padding: 7px 14px;
+  border: 1px solid var(--line-2);
+  background: var(--bg-2);
+  color: var(--ink-2);
+  transition: all 0.18s ease;
+}
+.jobit-landing .kpill:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+.jobit-landing .kpill.active {
+  background: var(--ink-grad);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 6px 16px rgba(31, 107, 255, 0.3);
+}
+
+/* Statement */
+.jobit-landing .band {
+  /* `auto` on the sides keeps the band centered within the .wrap 1160px cap;
+     a plain `0` here would override .wrap's `margin: 0 auto` and shove the
+     whole band flush-left, wider than the insights section below it. */
+  margin: 56px auto 8px;
+}
+.jobit-landing .statement {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  padding: 52px 56px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+.jobit-landing .statement::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 64px;
+  height: 4px;
+  border-radius: 0 0 4px 4px;
+  background: var(--ink-grad);
+}
+.jobit-landing .statement .kicker {
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--blue-deep);
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+.jobit-landing .statement p {
+  font-family: "Geist", system-ui, sans-serif;
+  font-weight: 500;
+  font-size: clamp(19px, 2.3vw, 26px);
+  line-height: 1.5;
+  margin: 0 auto;
+  max-width: 60ch;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.jobit-landing .stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 16px;
+}
+.jobit-landing .stat {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 22px 24px;
+  box-shadow: var(--shadow);
+}
+.jobit-landing .stat .n {
+  font-family: "Geist", system-ui, sans-serif;
+  font-weight: 800;
+  font-size: 38px;
+  color: var(--ink);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+.jobit-landing .stat .n .accent {
+  background: var(--ink-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.jobit-landing .stat .k {
+  font-size: 13.5px;
+  color: var(--muted-c);
+  margin-top: 10px;
+}
+
+/* Insights */
+.jobit-landing .sec {
+  padding: 60px 0 18px;
+}
+.jobit-landing .sec-head {
+  margin-bottom: 28px;
+}
+.jobit-landing .sec-head h2 {
+  font-family: "Geist", system-ui, sans-serif;
+  font-weight: 800;
+  font-size: clamp(28px, 3.6vw, 40px);
+  color: var(--ink);
+  margin: 8px 8px 8px;
+  letter-spacing: -0.025em;
+}
+.jobit-landing .sec-head p {
+  color: var(--muted-c);
+  margin: 8px;
+  font-size: 16px;
+}
+.jobit-landing .grid4 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+.jobit-landing .feat {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 26px;
+  box-shadow: var(--shadow);
+  transition: transform 0.18s ease, box-shadow 0.22s ease;
+}
+.jobit-landing .feat:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+.jobit-landing .feat.span {
+  grid-column: span 2;
+  display: grid;
+  margin: 8px;
+  grid-template-columns: auto 1fr;
+  gap: 22px;
+  align-items: center;
+}
+.jobit-landing .feat .ic {
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: rgba(31, 107, 255, 0.1);
+  color: var(--blue);
+  margin-bottom: 15px;
+}
+.jobit-landing .feat.span .ic {
+  margin-bottom: 0;
+  width: 62px;
+  height: 62px;
+  background: var(--ink-grad);
+  color: #fff;
+  box-shadow: 0 8px 22px rgba(31, 107, 255, 0.35);
+}
+.jobit-landing .feat.cyanic .ic {
+  background: rgba(11, 197, 214, 0.14);
+  color: #068a97;
+}
+.jobit-landing .feat.goldic .ic {
+  background: rgba(240, 168, 25, 0.14);
+  color: #b9770a;
+}
+.jobit-landing .feat h3 {
+  font-family: "Geist", system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 19px;
+  margin: 0 0 7px;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.jobit-landing .feat p {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: 14.5px;
+  line-height: 1.55;
+}
+.jobit-landing .feat svg {
+  display: block;
+}
+
+/* Final CTA */
+.jobit-landing .final {
+  position: relative;
+  overflow: hidden;
+  margin: 52px 0 12px;
+  text-align: center;
+  border-radius: 26px;
+  padding: 62px 32px;
+  background: var(--ink-grad);
+  color: #fff;
+  box-shadow: var(--shadow-lg);
+}
+.jobit-landing .final::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(600px 300px at 50% -20%, rgba(255, 255, 255, 0.25), transparent 60%);
+  pointer-events: none;
+}
+.jobit-landing .final h2 {
+  position: relative;
+  font-family: "Geist", system-ui, sans-serif;
+  font-weight: 800;
+  font-size: clamp(29px, 4vw, 46px);
+  margin: 0 0 12px;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.jobit-landing .final p {
+  position: relative;
+  color: rgba(255, 255, 255, 0.88);
+  max-width: 52ch;
+  margin: 0 auto 26px;
+  font-size: 16.5px;
+}
+.jobit-landing .final .lbtn-light {
+  position: relative;
+  background: #fff;
+  color: var(--blue-deep);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+.jobit-landing .final .lbtn-light:hover {
+  transform: translateY(-1px);
+}
+
+/* Footer */
+.jobit-landing .lfoot-wrap {
+  margin-top: 52px;
+  border-top: 1px solid var(--line);
+}
+.jobit-landing .lfoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 28px 0;
+  flex-wrap: wrap;
+  color: var(--muted-c);
+  font-size: 13.5px;
+}
+
+/* Reveal */
+.jobit-landing .reveal {
+  margin: 8px;
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.jobit-landing .reveal.in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (max-width: 900px) {
+  .jobit-landing .hero-grid {
+    grid-template-columns: 1fr;
+    gap: 34px;
+  }
+  .jobit-landing .hero {
+    padding: 40px 0 24px;
+  }
+  .jobit-landing .stats {
+    grid-template-columns: 1fr;
+  }
+  .jobit-landing .grid4 {
+    grid-template-columns: 1fr;
+  }
+  .jobit-landing .feat.span {
+    grid-template-columns: 1fr;
+  }
+  .jobit-landing .statement {
+    padding: 34px 26px;
+  }
+}
+
+/* Phones — scale display type down, tighten vertical spacing, and keep a clear,
+   even side gutter so no content hugs the screen edges. */
+@media (max-width: 560px) {
+  /* Wider than the 24px desktop base so phones get a clear side gutter. */
+  .jobit-landing .wrap {
+    padding: 0 30px;
+  }
+
+  /* Nav: shorter bar + compact controls so brand + language + sign-in fit. */
+  .jobit-landing .lnav-inner {
+    height: 58px;
+  }
+  .jobit-landing .brand .word {
+    font-size: 18px;
+  }
+  .jobit-landing .brand .dotmark {
+    width: 22px;
+    height: 22px;
+  }
+  .jobit-landing .lnav-right {
+    gap: 8px;
+  }
+  .jobit-landing .langtoggle button {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+  .jobit-landing .lbtn-sm {
+    padding: 7px 12px;
+    font-size: 13px;
+  }
+
+  /* Hero */
+  .jobit-landing .hero {
+    padding: 24px 0 12px;
+  }
+  .jobit-landing h1.title {
+    font-size: 32px;
+    margin: 14px 0 14px;
+  }
+  .jobit-landing .lede {
+    font-size: 16px;
+    margin-bottom: 22px;
+  }
+  .jobit-landing .cta-row .lbtn {
+    flex: 1 1 0;
+    justify-content: center;
+  }
+
+  /* Chart card */
+  .jobit-landing .kcard {
+    padding: 16px 16px 14px;
+    border-radius: 18px;
+  }
+  .jobit-landing .kcard-head {
+    min-height: 0;
+  }
+  .jobit-landing .kcard-head .kname {
+    font-size: 19px;
+  }
+  .jobit-landing .kcard-head .kval {
+    font-size: 25px;
+  }
+
+  /* Statement + stats */
+  .jobit-landing .statement {
+    padding: 28px 22px;
+    border-radius: 18px;
+  }
+  .jobit-landing .statement p {
+    font-size: 17px;
+    line-height: 1.5;
+  }
+  .jobit-landing .stat {
+    padding: 18px 22px;
+  }
+  .jobit-landing .stat .n {
+    font-size: 32px;
+  }
+
+  /* Sections */
+  .jobit-landing .sec {
+    padding: 44px 0 12px;
+  }
+  .jobit-landing .sec-head h2 {
+    font-size: 25px;
+  }
+  .jobit-landing .feat {
+    padding: 22px;
+    border-radius: 18px;
+  }
+
+  /* Final CTA */
+  .jobit-landing .final {
+    padding: 40px 22px;
+    border-radius: 20px;
+    margin-top: 40px;
+  }
+  .jobit-landing .final .lbtn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Footer: stack the three items left-aligned. */
+  .jobit-landing .lfoot {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jobit-landing .stagger > *,
+  .jobit-landing .kcard {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .jobit-landing .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .jobit-landing .kcard::before,
+  .jobit-landing .eyebrow .edot {
+    animation: none;
+  }
+}

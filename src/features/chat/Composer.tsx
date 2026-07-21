@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import type { ChangeEvent, KeyboardEvent } from "react";
 import { ApiError } from "@/lib/apiError";
 import { ALLOWED_CV_EXTENSIONS, useUploadCv, validateCvFile } from "@/api/upload";
+import { useLanguage } from "@/i18n/LanguageProvider";
 
 const MAX_LEN = 8000;
 
@@ -29,6 +30,7 @@ export function Composer({ disabled, blockedReason, onSend }: ComposerProps) {
   const [inlineError, setInlineError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const upload = useUploadCv();
+  const { t } = useLanguage();
 
   const busy = disabled || upload.isPending;
   const canSend = !busy && text.trim().length > 0 && text.length <= MAX_LEN;
@@ -56,14 +58,16 @@ export function Composer({ disabled, blockedReason, onSend }: ComposerProps) {
 
     const validationError = validateCvFile(file);
     if (validationError) {
-      setInlineError(validationError);
+      setInlineError(
+        validationError === "too_large" ? t("composer.tooLarge") : t("composer.unsupportedType"),
+      );
       return;
     }
     setInlineError(null);
     upload.mutate(file, {
       onSuccess: (res) => setAttachment({ file_id: res.file_id, filename: res.filename }),
       onError: (err) =>
-        setInlineError(ApiError.is(err) ? err.message : "Upload failed. Please try again."),
+        setInlineError(ApiError.is(err) ? err.message : t("composer.uploadFailed")),
     });
   }
 
@@ -78,7 +82,7 @@ export function Composer({ disabled, blockedReason, onSend }: ComposerProps) {
             </span>
             <button
               type="button"
-              aria-label="Remove attachment"
+              aria-label={t("composer.removeAttachment")}
               onClick={() => setAttachment(null)}
               className="material-symbols-outlined text-[16px] text-on-surface-variant hover:text-error"
             >
@@ -90,9 +94,9 @@ export function Composer({ disabled, blockedReason, onSend }: ComposerProps) {
         <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-xs flex flex-col focus-within:border-primary transition-all">
           <textarea
             name="message"
-            aria-label="Message"
+            aria-label={t("composer.messageAria")}
             className="w-full border-none focus:ring-0 focus:outline-none font-body-md text-body-md resize-none p-sm bg-transparent placeholder:text-on-surface-variant/50"
-            placeholder="Ask about career paths, labour laws, or salaries in Egypt…"
+            placeholder={t("composer.placeholder")}
             rows={2}
             maxLength={MAX_LEN}
             value={text}
@@ -105,15 +109,15 @@ export function Composer({ disabled, blockedReason, onSend }: ComposerProps) {
                 ref={fileInputRef}
                 type="file"
                 name="cv"
-                aria-label="CV file"
+                aria-label={t("composer.cvFileAria")}
                 accept={ALLOWED_CV_EXTENSIONS.join(",")}
                 className="hidden"
                 onChange={handleFile}
               />
               <button
                 type="button"
-                title="Attach CV (PDF/DOCX/DOC)"
-                aria-label="Attach CV"
+                title={t("composer.attachTitle")}
+                aria-label={t("composer.attachAria")}
                 disabled={upload.isPending}
                 onClick={() => fileInputRef.current?.click()}
                 className="p-xs text-on-surface-variant hover:text-primary transition-colors flex items-center gap-xs disabled:opacity-50"
@@ -122,16 +126,16 @@ export function Composer({ disabled, blockedReason, onSend }: ComposerProps) {
                   {upload.isPending ? "progress_activity" : "attach_file"}
                 </span>
                 <span className="text-label-caps font-label-caps hidden sm:inline">
-                  {upload.isPending ? "Uploading…" : "PDF/DOCX"}
+                  {upload.isPending ? t("composer.uploading") : t("composer.pdfDocx")}
                 </span>
               </button>
             </div>
             <button
               type="button"
-              aria-label="Send message"
+              aria-label={t("composer.sendAria")}
               disabled={!canSend}
               onClick={submit}
-              className="bg-primary text-on-primary p-sm rounded-lg flex items-center justify-center hover:opacity-90 active:scale-95 transition-all disabled:opacity-40 disabled:active:scale-100"
+              className="bg-gradient-to-r from-primary to-accent text-on-primary p-sm rounded-full flex items-center justify-center hover:brightness-105 active:scale-95 transition-all disabled:opacity-40 disabled:active:scale-100 shadow-md shadow-primary/30 disabled:shadow-none"
             >
               <span className="material-symbols-outlined">send</span>
             </button>
@@ -146,7 +150,7 @@ export function Composer({ disabled, blockedReason, onSend }: ComposerProps) {
           <p className="text-[11px] text-center mt-sm text-error">{blockedReason}</p>
         ) : (
           <p className="text-[11px] text-center mt-sm text-on-surface-variant opacity-60">
-            Jobit AI can provide guidance but does not replace legal advice.
+            {t("composer.disclaimer")}
           </p>
         )}
       </div>

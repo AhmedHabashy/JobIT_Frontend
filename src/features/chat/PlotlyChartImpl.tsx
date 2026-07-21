@@ -40,7 +40,7 @@ export default function PlotlyChartImpl({ chart }: { chart: Chart }) {
 
   const layout: Partial<Layout> = {
     autosize: true,
-    margin: { t: 32, r: 16, b: 40, l: 48 },
+    margin: { t: 40, r: 16, b: 40, l: 48 },
     // On-palette defaults (Nile lapis / Egyptian gold / palm green); a backend
     // figure that sets its own colours or backgrounds still wins via the spread.
     paper_bgcolor: "rgba(0,0,0,0)",
@@ -55,7 +55,11 @@ export default function PlotlyChartImpl({ chart }: { chart: Chart }) {
       <Plot
         data={figure.data}
         layout={layout}
-        config={{ displaylogo: false, responsive: true, ...figure.config }}
+        config={{
+          displayModeBar: false,
+          responsive: true,
+          ...figure.config,
+        }}
         style={{ width: "100%", height: "320px" }}
         useResizeHandler
       />

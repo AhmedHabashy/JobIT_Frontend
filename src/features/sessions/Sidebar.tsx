@@ -6,6 +6,7 @@ import { useMe } from "@/api/me";
 import { useToast } from "@/components/ToastProvider";
 import { ApiError } from "@/lib/apiError";
 import { SessionListItem } from "@/features/sessions/SessionListItem";
+import { useLanguage } from "@/i18n/LanguageProvider";
 
 /**
  * Workspace sidebar: New Chat, the user's session list (most-recent first), and
@@ -21,6 +22,7 @@ export function Sidebar() {
   const { data: me } = useMe();
   const { showToast } = useToast();
   const deleteChat = useDeleteChat();
+  const { t } = useLanguage();
 
   const sorted = useMemo(
     () =>
@@ -34,7 +36,7 @@ export function Sidebar() {
     deleteChat.mutate(id, {
       onError: (err) =>
         showToast({
-          message: ApiError.is(err) ? err.message : "Couldn't delete the conversation.",
+          message: ApiError.is(err) ? err.message : t("sidebar.deleteFailed"),
           variant: "retryable",
           requestId: ApiError.is(err) ? err.request_id : undefined,
           onRetry: () => handleDelete(id),
@@ -46,15 +48,15 @@ export function Sidebar() {
   return (
     <div className="flex flex-col h-full">
       <div className="p-md flex items-center gap-sm">
-        <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-on-primary shrink-0">
+        <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center text-on-primary shrink-0 shadow-md shadow-primary/30">
           <span className="material-symbols-outlined text-[20px]">smart_toy</span>
         </div>
         <div className="min-w-0">
           <h1 className="font-title-sm text-title-sm text-primary leading-tight truncate">
-            Career Coach
+            {t("sidebar.title")}
           </h1>
           <p className="font-body-sm text-body-sm text-on-surface-variant opacity-70">
-            AI Assistant
+            {t("sidebar.subtitle")}
           </p>
         </div>
       </div>
@@ -63,28 +65,28 @@ export function Sidebar() {
         <button
           type="button"
           onClick={() => navigate("/app")}
-          className="w-full flex items-center gap-base p-sm bg-secondary-container text-on-secondary-container rounded-lg active:scale-95 transition-transform"
+          className="w-full flex items-center justify-center gap-base p-sm bg-gradient-to-r from-primary to-accent text-on-primary rounded-full active:scale-95 transition-transform shadow-md shadow-primary/30 hover:brightness-105"
         >
           <span className="material-symbols-outlined">add_comment</span>
-          <span className="font-body-sm text-body-sm">New Chat</span>
+          <span className="font-body-sm text-body-sm">{t("sidebar.newChat")}</span>
         </button>
       </div>
 
       <nav className="flex-1 px-sm mt-base overflow-y-auto space-y-xs">
         <div className="text-label-caps font-label-caps text-on-surface-variant px-sm py-xs opacity-50">
-          HISTORY
+          {t("sidebar.history")}
         </div>
         {isLoading ? (
           <p className="px-sm py-xs font-body-sm text-body-sm text-on-surface-variant opacity-60">
-            Loading…
+            {t("sidebar.loading")}
           </p>
         ) : isError ? (
           <p className="px-sm py-xs font-body-sm text-body-sm text-error">
-            Couldn't load conversations.
+            {t("sidebar.loadFailed")}
           </p>
         ) : sorted.length === 0 ? (
           <p className="px-sm py-xs font-body-sm text-body-sm text-on-surface-variant opacity-60">
-            No conversations yet.
+            {t("sidebar.empty")}
           </p>
         ) : (
           sorted.map((s) => (
@@ -104,8 +106,8 @@ export function Sidebar() {
           <div className="flex items-center gap-xs bg-primary-container/10 rounded-lg px-sm py-xs">
             <span className="material-symbols-outlined text-primary text-[18px]">toll</span>
             <span className="font-body-sm text-body-sm text-on-surface-variant">
-              <span className="font-bold text-on-surface">{me.credits}</span> credit
-              {me.credits === 1 ? "" : "s"} left
+              <span className="font-bold text-on-surface">{me.credits}</span>{" "}
+              {me.credits === 1 ? t("sidebar.creditSingular") : t("sidebar.creditPlural")}
             </span>
           </div>
         ) : null}
@@ -125,8 +127,8 @@ export function Sidebar() {
           </div>
           <button
             type="button"
-            aria-label="Sign out"
-            title="Sign out"
+            aria-label={t("sidebar.signOut")}
+            title={t("sidebar.signOut")}
             onClick={() => void signOut()}
             className="material-symbols-outlined text-[20px] text-on-surface-variant hover:text-primary shrink-0 p-xs -m-xs rounded-lg hover:bg-surface-container-high transition-colors"
           >
