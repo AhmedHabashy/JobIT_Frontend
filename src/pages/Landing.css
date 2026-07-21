@@ -406,7 +406,10 @@
 
 /* Statement */
 .jobit-landing .band {
-  margin: 56px 0 8px;
+  /* `auto` on the sides keeps the band centered within the .wrap 1160px cap;
+     a plain `0` here would override .wrap's `margin: 0 auto` and shove the
+     whole band flush-left, wider than the insights section below it. */
+  margin: 56px auto 8px;
 }
 .jobit-landing .statement {
   position: relative;
@@ -493,12 +496,12 @@
   font-weight: 800;
   font-size: clamp(28px, 3.6vw, 40px);
   color: var(--ink);
-  margin: 0 0 8px;
+  margin: 8px 8px 8px;
   letter-spacing: -0.025em;
 }
 .jobit-landing .sec-head p {
   color: var(--muted-c);
-  margin: 0;
+  margin: 8px;
   font-size: 16px;
 }
 .jobit-landing .grid4 {
@@ -522,6 +525,7 @@
 .jobit-landing .feat.span {
   grid-column: span 2;
   display: grid;
+  margin: 8px;
   grid-template-columns: auto 1fr;
   gap: 22px;
   align-items: center;
@@ -633,6 +637,7 @@
 
 /* Reveal */
 .jobit-landing .reveal {
+  margin: 8px;
   opacity: 0;
   transform: translateY(18px);
   transition: opacity 0.6s ease, transform 0.6s ease;
@@ -661,6 +666,116 @@
   }
   .jobit-landing .statement {
     padding: 34px 26px;
+  }
+}
+
+/* Phones — scale display type down, tighten vertical spacing, and keep a clear,
+   even side gutter so no content hugs the screen edges. */
+@media (max-width: 560px) {
+  /* Wider than the 24px desktop base so phones get a clear side gutter. */
+  .jobit-landing .wrap {
+    padding: 0 30px;
+  }
+
+  /* Nav: shorter bar + compact controls so brand + language + sign-in fit. */
+  .jobit-landing .lnav-inner {
+    height: 58px;
+  }
+  .jobit-landing .brand .word {
+    font-size: 18px;
+  }
+  .jobit-landing .brand .dotmark {
+    width: 22px;
+    height: 22px;
+  }
+  .jobit-landing .lnav-right {
+    gap: 8px;
+  }
+  .jobit-landing .langtoggle button {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+  .jobit-landing .lbtn-sm {
+    padding: 7px 12px;
+    font-size: 13px;
+  }
+
+  /* Hero */
+  .jobit-landing .hero {
+    padding: 24px 0 12px;
+  }
+  .jobit-landing h1.title {
+    font-size: 32px;
+    margin: 14px 0 14px;
+  }
+  .jobit-landing .lede {
+    font-size: 16px;
+    margin-bottom: 22px;
+  }
+  .jobit-landing .cta-row .lbtn {
+    flex: 1 1 0;
+    justify-content: center;
+  }
+
+  /* Chart card */
+  .jobit-landing .kcard {
+    padding: 16px 16px 14px;
+    border-radius: 18px;
+  }
+  .jobit-landing .kcard-head {
+    min-height: 0;
+  }
+  .jobit-landing .kcard-head .kname {
+    font-size: 19px;
+  }
+  .jobit-landing .kcard-head .kval {
+    font-size: 25px;
+  }
+
+  /* Statement + stats */
+  .jobit-landing .statement {
+    padding: 28px 22px;
+    border-radius: 18px;
+  }
+  .jobit-landing .statement p {
+    font-size: 17px;
+    line-height: 1.5;
+  }
+  .jobit-landing .stat {
+    padding: 18px 22px;
+  }
+  .jobit-landing .stat .n {
+    font-size: 32px;
+  }
+
+  /* Sections */
+  .jobit-landing .sec {
+    padding: 44px 0 12px;
+  }
+  .jobit-landing .sec-head h2 {
+    font-size: 25px;
+  }
+  .jobit-landing .feat {
+    padding: 22px;
+    border-radius: 18px;
+  }
+
+  /* Final CTA */
+  .jobit-landing .final {
+    padding: 40px 22px;
+    border-radius: 20px;
+    margin-top: 40px;
+  }
+  .jobit-landing .final .lbtn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Footer: stack the three items left-aligned. */
+  .jobit-landing .lfoot {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
   }
 }
 

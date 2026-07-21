@@ -48,15 +48,6 @@ export default function PlotlyChartImpl({ chart }: { chart: Chart }) {
     colorway: ["#123a5a", "#c6892b", "#2e7d5b", "#1e5687", "#8a5e15"],
     ...figure.layout,
     font: { family: "Geist, system-ui, sans-serif", color: "#1e2a32", ...figure.layout?.font },
-    // Keep the tool bar as a light horizontal strip in the top margin so it
-    // never covers the chart's data. Forced horizontal even if the backend set it.
-    modebar: {
-      bgcolor: "rgba(255,255,255,0.9)",
-      color: "#5f6b7d",
-      activecolor: "#1f6bff",
-      ...figure.layout?.modebar,
-      orientation: "h",
-    },
   };
 
   return (
@@ -65,9 +56,8 @@ export default function PlotlyChartImpl({ chart }: { chart: Chart }) {
         data={figure.data}
         layout={layout}
         config={{
-          displaylogo: false,
+          displayModeBar: false,
           responsive: true,
-          modeBarButtonsToRemove: ["lasso2d", "select2d"],
           ...figure.config,
         }}
         style={{ width: "100%", height: "320px" }}
