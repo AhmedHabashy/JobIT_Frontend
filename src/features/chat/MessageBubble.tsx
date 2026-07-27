@@ -47,7 +47,11 @@ export function MessageBubble({
           }
         >
           {content ? (
-            <p className="font-body-md text-body-md whitespace-pre-wrap break-words">{content}</p>
+            isAssistant ? (
+              <div className="font-body-md text-body-md break-words">{content}</div>
+            ) : (
+              <p className="font-body-md text-body-md whitespace-pre-wrap break-words">{content}</p>
+            )
           ) : null}
           {isAssistant && charts && charts.length > 0
             ? charts.map((chart, i) => <PlotlyChart key={i} chart={chart} />)

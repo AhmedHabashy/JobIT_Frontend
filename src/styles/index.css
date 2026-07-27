@@ -32,6 +32,19 @@
   }
 }
 
+/* Scale the authenticated app view down so it doesn't feel oversized. Phones get
+   a tighter scale than desktop (the mobile bubbles/text/charts read too large at
+   1:1). Scoped to .app-canvas (the workspace main area) — the drawer is a sibling
+   and stays full size. */
+.app-canvas {
+  zoom: 0.82;
+}
+@media (min-width: 768px) {
+  .app-canvas {
+    zoom: 0.9;
+  }
+}
+
 /* Respect users who prefer reduced motion. */
 @media (prefers-reduced-motion: reduce) {
   *,
