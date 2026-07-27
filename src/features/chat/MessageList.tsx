@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { Chart, Message } from "@/types/api";
 import { MessageBubble } from "@/features/chat/MessageBubble";
+import { Markdown } from "@/features/chat/Markdown";
 import { ToolStatus } from "@/features/chat/ToolStatus";
 import { useLanguage } from "@/i18n/LanguageProvider";
 
@@ -66,7 +67,9 @@ function RevealText({ text, onComplete }: { text: string; onComplete: () => void
     return () => cancelAnimationFrame(rafRef.current);
   }, [text]);
 
-  return <>{text.slice(0, count)}</>;
+  // Render the revealed slice as Markdown so formatting appears as it types
+  // (a stray ** may flash between the opening/closing marks — expected).
+  return <Markdown>{text.slice(0, count)}</Markdown>;
 }
 
 /** Assistant "thinking" bubble shown while the backend generates the answer. */
@@ -143,19 +146,18 @@ export function MessageList({
         {messages.map((m, i) => {
           const revealing =
             i === lastIndex && m.role === "assistant" && m.content === revealContent;
+          const rendered =
+            m.role === "assistant" ? (
+              revealing ? (
+                <RevealText text={m.content} onComplete={onRevealComplete} />
+              ) : (
+                <Markdown>{m.content}</Markdown>
+              )
+            ) : (
+              m.content
+            );
           return (
-            <MessageBubble
-              key={i}
-              role={m.role}
-              content={
-                revealing ? (
-                  <RevealText text={m.content} onComplete={onRevealComplete} />
-                ) : (
-                  m.content
-                )
-              }
-              charts={m.charts}
-            />
+            <MessageBubble key={i} role={m.role} content={rendered} charts={m.charts} />
           );
         })}
 

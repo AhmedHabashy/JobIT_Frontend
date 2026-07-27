@@ -3,6 +3,7 @@ import { AppShell, useDrawer } from "@/components/AppShell";
 import { useLanguage } from "@/i18n/LanguageProvider";
 import { IconButton } from "@/components/ui/Button";
 import { Brand } from "@/components/Brand";
+import { useChats } from "@/api/sessions";
 import { Sidebar } from "@/features/sessions/Sidebar";
 import { ChatView } from "@/features/chat/ChatView";
 
@@ -22,13 +23,18 @@ export default function Workspace() {
 }
 
 /**
- * Top bar for the conversation pane. Rendered inside AppShell so the mobile menu
- * button can reach the drawer via useDrawer(); the button only shows below md,
- * where the sidebar rail is collapsed.
+ * Top bar for the conversation pane. Rendered inside AppShell so the menu button
+ * can reach the drawer via useDrawer() — the sidebar is a drawer at all widths,
+ * so the button is always shown. The title mirrors the sidebar's session name
+ * (same useChats source), falling back to the untitled placeholder / New chat.
  */
 function WorkspaceHeader({ sessionId }: { sessionId: string | undefined }) {
   const { toggleLanguage, t } = useLanguage();
   const openDrawer = useDrawer();
+  const { data: sessions } = useChats();
+
+  const sessionTitle = sessions?.find((s) => s.session_id === sessionId)?.title.trim();
+  const title = sessionId ? sessionTitle || t("session.untitled") : t("workspace.newChat");
 
   return (
     <header className="h-16 flex items-center gap-sm px-md border-b border-outline-variant bg-surface-container-low shrink-0">
@@ -36,7 +42,7 @@ function WorkspaceHeader({ sessionId }: { sessionId: string | undefined }) {
         icon="menu"
         label={t("workspace.openMenu")}
         onClick={openDrawer}
-        className="md:hidden -ms-xs"
+        className="-ms-xs"
       />
       <Link
         to="/"
@@ -48,7 +54,7 @@ function WorkspaceHeader({ sessionId }: { sessionId: string | undefined }) {
       </Link>
       <span className="h-6 w-px bg-outline-variant shrink-0 mx-xs" aria-hidden="true" />
       <h2 className="font-title-sm text-title-sm truncate flex-1 min-w-0 text-on-surface-variant">
-        {sessionId ? `${t("workspace.session")} ${sessionId.slice(0, 8)}…` : t("workspace.newChat")}
+        {title}
       </h2>
       <IconButton
         icon="translate"
