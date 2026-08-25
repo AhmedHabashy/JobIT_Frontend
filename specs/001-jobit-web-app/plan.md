@@ -35,7 +35,7 @@ data is owned by the backend and accessed over HTTP/SSE.
 `ApiError`→UX mapper. React Testing Library available for component tests where valuable.
 
 **Target Platform**: Static SPA hosted on Cloudflare Pages (output `dist`, SPA redirect
-`/* /index.html 200`). Backend at `VITE_API_BASE_URL` (prod `https://api.ahabashy.com`).
+`/* /index.html 200`). Backend at `VITE_API_BASE_URL` (prod `https://api.ejobit.com`).
 
 **Project Type**: Web frontend (single Vite SPA at repository root). No backend in this repo.
 
