@@ -41,7 +41,7 @@ export default defineConfig(({ command, mode }) => {
       proxy: isDevServer
         ? {
             "/api": {
-              target: backend || "https://api.ejobit.com",
+              target: backend || "https://api.ahabashy.com",
               changeOrigin: true,
               secure: true,
             },
