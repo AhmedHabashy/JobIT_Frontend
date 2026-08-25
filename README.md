@@ -37,7 +37,7 @@ npm run dev               # http://localhost:5173
 ```
 VITE_SUPABASE_URL=https://<project-ref>.supabase.co   # project API URL, NOT the Postgres string
 VITE_SUPABASE_ANON_KEY=<anon public key>
-VITE_API_BASE_URL=https://api.ahabashy.com            # backend base URL (no trailing slash)
+VITE_API_BASE_URL=https://api.ejobit.com              # backend base URL (no trailing slash)
 ```
 
 > **Local CORS / dev proxy.** `localhost` is typically not in the backend's
