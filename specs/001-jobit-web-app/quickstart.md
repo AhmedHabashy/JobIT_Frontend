@@ -2,7 +2,7 @@
 
 ## Prerequisites
 - Node.js 20+ and npm.
-- Backend reachable at your `VITE_API_BASE_URL` (prod: `https://api.ejobit.com`,
+- Backend reachable at your `VITE_API_BASE_URL` (prod: `https://api.ahabashy.com`,
   local: `http://localhost:8000`).
 - Supabase project URL + anon key (the app authenticates users via Supabase).
 - An operator-provisioned test account (e.g. `test@jobit.dev`) — there is no self-serve signup.
@@ -18,7 +18,7 @@ npm run dev                 # Vite dev server (default http://localhost:5173)
 ```
 VITE_SUPABASE_URL=https://<project>.supabase.co     # the project API URL, NOT the Postgres connection string
 VITE_SUPABASE_ANON_KEY=<anon key>
-VITE_API_BASE_URL=https://api.ejobit.com
+VITE_API_BASE_URL=https://api.ahabashy.com
 ```
 
 > **Dev CORS / proxy.** `localhost` is not in the backend's `AUTH__ALLOWED_ORIGINS`, so
