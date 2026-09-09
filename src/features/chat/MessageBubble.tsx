@@ -19,7 +19,7 @@ function Avatar({ role }: { role: Message["role"] }) {
 
 /**
  * One chat turn. Assistant messages render on the start side with a white card
- * and any charts inline; user messages render on the end side in a primary
+ * and any charts above the text; user messages render on the end side in a primary
  * bubble. Logical properties (start/end) mirror correctly under RTL.
  */
 export function MessageBubble({
@@ -46,6 +46,9 @@ export function MessageBubble({
               : "bg-primary text-on-primary p-md rounded-xl inline-block"
           }
         >
+          {isAssistant && charts && charts.length > 0
+            ? charts.map((chart, i) => <PlotlyChart key={i} chart={chart} />)
+            : null}
           {content ? (
             isAssistant ? (
               <div className="font-body-md text-body-md break-words">{content}</div>
@@ -53,9 +56,6 @@ export function MessageBubble({
               <p className="font-body-md text-body-md whitespace-pre-wrap break-words">{content}</p>
             )
           ) : null}
-          {isAssistant && charts && charts.length > 0
-            ? charts.map((chart, i) => <PlotlyChart key={i} chart={chart} />)
-            : null}
           {children}
         </div>
       </div>

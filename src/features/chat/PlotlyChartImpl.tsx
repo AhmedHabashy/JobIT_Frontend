@@ -56,7 +56,7 @@ export default function PlotlyChartImpl({ chart }: { chart: Chart }) {
 
   if (!figure || !Array.isArray(figure.data)) {
     return (
-      <div className="mt-sm p-sm rounded-lg border border-outline-variant bg-surface-container-low font-body-sm text-body-sm text-on-surface-variant">
+      <div className="mb-sm p-sm rounded-lg border border-outline-variant bg-surface-container-low font-body-sm text-body-sm text-on-surface-variant">
         Unable to render chart.
       </div>
     );
@@ -96,7 +96,7 @@ export default function PlotlyChartImpl({ chart }: { chart: Chart }) {
     <div
       ref={containerRef}
       dir={chart.rtl ? "rtl" : "ltr"}
-      className="mt-sm w-full overflow-hidden rounded-lg border border-outline-variant bg-surface-container-lowest"
+      className="mb-sm w-full overflow-hidden rounded-lg border border-outline-variant bg-surface-container-lowest"
     >
       {heading ? (
         <p className="px-sm pt-sm text-center font-body-md text-body-md font-bold text-on-surface text-balance">
