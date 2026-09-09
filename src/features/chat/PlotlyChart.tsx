@@ -10,7 +10,7 @@ export function PlotlyChart({ chart }: { chart: Chart }) {
   return (
     <Suspense
       fallback={
-        <div className="mt-sm h-[320px] w-full rounded-lg border border-outline-variant bg-surface-container-low flex items-center justify-center">
+        <div className="mb-sm h-[320px] w-full rounded-lg border border-outline-variant bg-surface-container-low flex items-center justify-center">
           <span className="material-symbols-outlined animate-spin text-on-surface-variant">
             progress_activity
           </span>
