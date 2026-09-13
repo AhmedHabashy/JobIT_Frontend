@@ -481,9 +481,7 @@ export default function Landing() {
 
       <footer className="lfoot-wrap">
         <div className="wrap lfoot">
-          <span className="brand" style={{ cursor: "default" }}>
-            <Wordmark />
-          </span>
+          <img className="lfoot-mark" src="/eces-mark.png" alt="ECES" />
           <span>{t("landing.footerRights")}</span>
           <span>{t("landing.footerAccess")}</span>
           <img className="lfoot-eces" src="/eces-mark.png" alt="ECES" />
