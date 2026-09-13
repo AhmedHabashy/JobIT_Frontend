@@ -626,14 +626,6 @@
   color: var(--muted-c);
   font-size: 13.5px;
 }
-/* The footer marks are the crown alone; the footer copy already names ECES,
-   so a wordmark would only repeat it. */
-.jobit-landing .lfoot-mark,
-.jobit-landing .lfoot-eces {
-  height: 26px;
-  width: auto;
-  display: block;
-}
 
 /* Reveal */
 .jobit-landing .reveal {
