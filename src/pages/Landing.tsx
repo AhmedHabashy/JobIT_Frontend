@@ -305,7 +305,7 @@ export default function Landing() {
 
   const Wordmark = () => (
     <>
-      <span className="dotmark" aria-hidden="true" />
+      <img className="dotmark" src="/eces-mark.png" alt="" aria-hidden="true" />
       <span className="word">
         Job<b>it</b>
       </span>
@@ -398,9 +398,7 @@ export default function Landing() {
               </a>
             </div>
             <div className="trust">
-              <span className="seal" aria-hidden="true">
-                E
-              </span>
+              <img className="seal" src="/eces-mark.png" alt="" aria-hidden="true" />
               {t("landing.trustEces")}
             </div>
           </div>
@@ -483,6 +481,7 @@ export default function Landing() {
           </span>
           <span>{t("landing.footerRights")}</span>
           <span>{t("landing.footerAccess")}</span>
+          <img className="lfoot-eces" src="/eces-logo.png" alt="ECES" />
         </div>
       </footer>
     </div>
