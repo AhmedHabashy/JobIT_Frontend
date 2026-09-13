@@ -227,13 +227,22 @@
   flex-wrap: wrap;
   gap: 12px;
 }
+/* Links out to the ECES site; sits inline so it keeps the flex row. */
 .jobit-landing .trust {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 10px;
   margin-top: 28px;
   color: var(--muted-c);
   font-size: 13.5px;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.jobit-landing .trust:hover,
+.jobit-landing .trust:focus-visible {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 .jobit-landing .trust .seal {
   height: 22px;

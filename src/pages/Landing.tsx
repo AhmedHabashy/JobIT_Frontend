@@ -397,10 +397,15 @@ export default function Landing() {
                 {t("landing.ctaHow")}
               </a>
             </div>
-            <div className="trust">
+            <a
+              className="trust"
+              href="https://eces.org.eg/en/"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
               <img className="seal" src="/eces-mark.png" alt="" aria-hidden="true" />
               {t("landing.trustEces")}
-            </div>
+            </a>
           </div>
 
           <InteractiveChart />
