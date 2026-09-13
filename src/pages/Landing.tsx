@@ -305,7 +305,7 @@ export default function Landing() {
 
   const Wordmark = () => (
     <>
-      <span className="dotmark" aria-hidden="true" />
+      <img className="dotmark" src="/eces-logo.png" alt="" aria-hidden="true" />
       <span className="word">
         Job<b>it</b>
       </span>
@@ -397,12 +397,15 @@ export default function Landing() {
                 {t("landing.ctaHow")}
               </a>
             </div>
-            <div className="trust">
-              <span className="seal" aria-hidden="true">
-                E
-              </span>
+            <a
+              className="trust"
+              href="https://eces.org.eg/en/"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              <img className="seal" src="/eces-mark.png" alt="" aria-hidden="true" />
               {t("landing.trustEces")}
-            </div>
+            </a>
           </div>
 
           <InteractiveChart />
@@ -478,9 +481,6 @@ export default function Landing() {
 
       <footer className="lfoot-wrap">
         <div className="wrap lfoot">
-          <span className="brand" style={{ cursor: "default" }}>
-            <Wordmark />
-          </span>
           <span>{t("landing.footerRights")}</span>
           <span>{t("landing.footerAccess")}</span>
         </div>
